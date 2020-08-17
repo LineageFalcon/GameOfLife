@@ -7,9 +7,9 @@ class Runtime {
 }
 
 function builder() {
-    const body = document.getElementsByTagName('body');
-    const div = document.createElement('div');
-    for(let i = 0; i < 10; i++){
-        
+    let body = document.getElementsByTagName('body')[0];
+    for(let i = 0; i < 9; i++){
+        body.appendChild(document.createElement('div'));
+        console.log('Ping');
     }
 }
