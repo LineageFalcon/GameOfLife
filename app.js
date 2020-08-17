@@ -1,18 +1,23 @@
-class Runtime {
+class instanceOfLife {
     constructor(size) {
         this.size = size*size;
+        this.items = [];
     }
 
     getDivs() {
         for(let i = 0; i < (this.size); i++) {
             console.log(document.getElementsByTagName('div')[i]);
-            console.log("counter" + i);
+            this.items[i] = document.getElementsByTagName('div')[i];
         }
-        // let items = document.getElementsByName('div')[i];
     }
+
+    changeColor(index = 2) {
+        this.items[index].style.backgroundColor = "blue";
+    }
+
 }
 
-let runing = new Runtime(3);
+let runing = new instanceOfLife(3);
 
 function builder(size) {
     let body = document.getElementsByTagName('section')[0];
