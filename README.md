@@ -1,2 +1,2 @@
 # GameOfLife
-SomePracticing
+A little training task to practice JavaScript.
