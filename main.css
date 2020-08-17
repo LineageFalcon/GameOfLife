@@ -30,6 +30,10 @@ div {
     background-color: brown;
 }
 
-div:nth-child(odd) {
-    background-color: burlywood;
+div.alive {
+    background-color: greenyellow;
+}
+
+div.dead {
+    background-color: orangered;
 }
