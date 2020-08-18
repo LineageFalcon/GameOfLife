@@ -9,11 +9,12 @@ class instanceOfLife {
 
     builder() {
         let body = document.getElementsByTagName('section')[0];
-        // body.style.gridTemplateColumns = size;
-        // body.style.gridTemplateRows = size;
+        body.style.gridTemplateColumns = 'repeat(' + this.size + ', auto)';
+        body.style.gridTemplateRows = 'repeat(' + this.size + ', auto)';
         for(let i = 0; i < this.hostSize; i++){
             let div = document.createElement('div');
-            if (i >= 3 && i <= 5) {
+            let ran = Math.round(Math.random());
+            if (ran == 1) {
                 body.appendChild(div).setAttribute('class', 'alive');
             }
             else {
@@ -128,7 +129,7 @@ class instanceOfLife {
 
 }
 
-let X = new instanceOfLife(3);
+let X = new instanceOfLife(9);
 X.builder();
 X.getDivs();
 X.prepHost();// prepare methods
