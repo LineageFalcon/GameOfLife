@@ -1,12 +1,10 @@
 class instanceOfLife {
     constructor(size) {
-        this.size = size;
-        this.hostSize = size * size
-        this.items = [];
-        this.row = [];
-        this.column = [];
-        this.host= [];
-        this.futureHost = [];
+        this.size = size;// going to be a user input
+        this.hostSize = size * size;//used in for-loops
+        this.items = [];//holds the div obj from the DOM
+        this.host= [];//will be fused to a twodimensional array
+        this.futureHost = [];//same here
     }
 
     builder() {
@@ -60,16 +58,22 @@ class instanceOfLife {
         console.log(this.host);
     }
 
-    calculateN() {
+    calcN() {
         let count = 0;
-        for(let i = 0; i < this.hostSize; i++) {
-            for(let k = 0; k < this.hostSize; k++){
-                
-                //item i has to be checked if it has neighbours in the direction of -4 or +4 and if they are dead or alive
-                //each k gets checked for its value in this case its css attribute class 
-                // if (this.items[k].getAttribute('class') === 'alive') {
-                //     count++;
-                // } else {}
+        for(let i = 0; i < this.size; i++) {
+            for(let k = 0; k < this.size; k++){
+                if(i - 1 >= 0) {
+                    if(this.host[i - 1][k] == 1) {count++;}
+                }
+                if(i + 1 <= this.size - 1) {
+                    if(this.host[i + 1][k] == 1) {count++;}
+                }
+                if(k - 1 >= 0) {
+                    if(this.host[i][k - 1] == 1) {count++;}
+                }
+                if(k + 1 <= this.size - 1) {
+                    if(this.host[i][k + 1] == 1) {count++;}
+                }
             }
         }
         console.log(count);
@@ -80,4 +84,5 @@ class instanceOfLife {
 let X = new instanceOfLife(3);
 X.builder();
 X.getDivs();
-X.calculateN();
+X.mapDivs();
+X.calcN();
