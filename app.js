@@ -42,9 +42,13 @@ class instanceOfLife {
         }
     }
 
+    copyHost() {
+
+    }
+
     mapDivs() {
         let index = 0;
-        this.prepHost()
+        this.prepHost()// this method has to get outta here soon
         for(let i = 0; i < this.size; i++) {
             for(let k = 0; k < this.size; k++) {
                 if(this.items[index].getAttribute('class') == 'alive'){
@@ -52,10 +56,24 @@ class instanceOfLife {
                 } else {
                     this.host[i][k] = 0;
                 }
-                index++
+                index++;
             }
         }
         console.log(this.host);
+    }
+
+    formatDivs() {
+        let index = 0;
+        for(let i = 0; i < this.size; i++) {
+            for(let k = 0; k < this.size; k++) {
+                if(this.host[i][k] == 1) {
+                    this.items[index].setAttribute('class', 'alive');
+                } else {
+                    this.items[index].setAttribute('class', 'dead');
+                }
+                index++;
+            }
+        }
     }
 
     calcN() {
@@ -65,27 +83,28 @@ class instanceOfLife {
                 if(i - 1 >= 0) {
                     if(this.host[i - 1][k] == 1) {count++;}
                 }
-                if(i + 1 <= this.size - 1) {
+                if(i + 1 < this.size) {
                     if(this.host[i + 1][k] == 1) {count++;}
                 }
                 if(k - 1 >= 0) {
                     if(this.host[i][k - 1] == 1) {count++;}
                 }
-                if(k + 1 <= this.size - 1) {
+                if(k + 1 < this.size) {
                     if(this.host[i][k + 1] == 1) {count++;}
                 }
                 if(i - 1 >= 0 && k - 1 >= 0) {
                     if(this.host[i - 1][k - 1]) {count++}
                 }
-                if(i - 1 >= 0 && k + 1 <= this.size - 1) {
+                if(i - 1 >= 0 && k + 1 < this.size) {
                     if(this.host[i - 1][k + 1]) {count++}
                 }
-                if(i + 1 <= this.size - 1 && k + 1 <= this.size - 1) {
+                if(i + 1 < this.size && k + 1 < this.size) {
                     if(this.host[i + 1][k + 1]) {count++}
                 }
-                if(i + 1 <= this.size - 1 && k - 1 >= 0) {
+                if(i + 1 < this.size && k - 1 >= 0) {
                     if(this.host[i + 1][k - 1]) {count++}
                 }
+
             }
         }
         console.log(count);
