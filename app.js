@@ -74,6 +74,18 @@ class instanceOfLife {
                 if(k + 1 <= this.size - 1) {
                     if(this.host[i][k + 1] == 1) {count++;}
                 }
+                if(i - 1 >= 0 && k - 1 >= 0) {
+                    if(this.host[i - 1][k - 1]) {count++}
+                }
+                if(i - 1 >= 0 && k + 1 <= this.size - 1) {
+                    if(this.host[i - 1][k + 1]) {count++}
+                }
+                if(i + 1 <= this.size - 1 && k + 1 <= this.size - 1) {
+                    if(this.host[i + 1][k + 1]) {count++}
+                }
+                if(i + 1 <= this.size - 1 && k - 1 >= 0) {
+                    if(this.host[i + 1][k - 1]) {count++}
+                }
             }
         }
         console.log(count);
