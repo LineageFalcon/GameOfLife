@@ -43,12 +43,16 @@ class instanceOfLife {
     }
 
     copyHost() {
-
+        for(let i = 0; i < this.size; i++) {
+            for(let k = 0; k < this.size; k++) {
+                this.host[i][k] = this.futureHost[i][k];
+                this.futureHost[i][k] = 0;
+            }
+        }
     }
 
     mapDivs() {
         let index = 0;
-        this.prepHost()// this method has to get outta here soon
         for(let i = 0; i < this.size; i++) {
             for(let k = 0; k < this.size; k++) {
                 if(this.items[index].getAttribute('class') == 'alive'){
@@ -59,7 +63,6 @@ class instanceOfLife {
                 index++;
             }
         }
-        console.log(this.host);
     }
 
     formatDivs() {
@@ -77,9 +80,9 @@ class instanceOfLife {
     }
 
     calcN() {
-        let count = 0;
         for(let i = 0; i < this.size; i++) {
             for(let k = 0; k < this.size; k++){
+                let count = 0;
                 if(i - 1 >= 0) {
                     if(this.host[i - 1][k] == 1) {count++;}
                 }
@@ -93,21 +96,34 @@ class instanceOfLife {
                     if(this.host[i][k + 1] == 1) {count++;}
                 }
                 if(i - 1 >= 0 && k - 1 >= 0) {
-                    if(this.host[i - 1][k - 1]) {count++}
+                    if(this.host[i - 1][k - 1]) {count++;}
                 }
                 if(i - 1 >= 0 && k + 1 < this.size) {
-                    if(this.host[i - 1][k + 1]) {count++}
+                    if(this.host[i - 1][k + 1]) {count++;}
                 }
                 if(i + 1 < this.size && k + 1 < this.size) {
-                    if(this.host[i + 1][k + 1]) {count++}
+                    if(this.host[i + 1][k + 1]) {count++;}
                 }
                 if(i + 1 < this.size && k - 1 >= 0) {
-                    if(this.host[i + 1][k - 1]) {count++}
+                    if(this.host[i + 1][k - 1]) {count++;}
                 }
-
+                switch(this.host[i][k]) {
+                    case 1: switch(count) {
+                        case 2: this.futureHost[i][k] = 1;
+                        break;
+                        case 3: this.futureHost[i][k] = 1;
+                        break;
+                        default: this.futureHost[i][k] = 0;
+                        break;
+                        }
+                    break;
+                    case 0: if(count == 3) {this.futureHost[i][k] = 1;} else {this.futureHost[i][k] = 0;}
+                    break;
+                }
             }
         }
-        console.log(count);
+        this.copyHost();
+        this.formatDivs();
     }
 
 }
@@ -115,5 +131,7 @@ class instanceOfLife {
 let X = new instanceOfLife(3);
 X.builder();
 X.getDivs();
+X.prepHost();// prepare methods
+
 X.mapDivs();
-X.calcN();
+X.calcN();// looping methods
