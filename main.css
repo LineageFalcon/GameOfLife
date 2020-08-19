@@ -11,13 +11,13 @@ body {
     box-sizing: border-box;
     flex-flow: row wrap;
     align-content: center;
-    justify-items: center;
+    justify-content: center;
 }
 
 section {
     display: grid;
-    height: 30px;
-    width: 30px;
+    /* height: 30px;
+    width: 30px; */
     grid-template-rows: repeat(3, auto);
     grid-template-columns: repeat(3, auto);
 }

@@ -1,10 +1,11 @@
 class instanceOfLife {
-    constructor(size) {
+    constructor(size = 3) {
         this.size = size;// going to be a user input
         this.hostSize = size * size;//used in for-loops
         this.items = [];//holds the div obj from the DOM
         this.host= [];//will be fused to a twodimensional array
         this.futureHost = [];//same here
+        this.time;
     }
 
     builder() {
@@ -25,7 +26,6 @@ class instanceOfLife {
 
     getDivs() {
         for(let i = 0; i < (this.hostSize); i++) {
-            console.log(document.getElementsByTagName('div')[i]);
             this.items[i] = document.getElementsByTagName('div')[i];
         }
     }
@@ -129,10 +129,19 @@ class instanceOfLife {
 
 }
 
-let X = new instanceOfLife(9);
+let X = new instanceOfLife(10);
 X.builder();
 X.getDivs();
 X.prepHost();// prepare methods
 
-X.mapDivs();
-X.calcN();// looping methods
+life(X);
+
+function life(obj, evolution = true) {
+    if (evolution) {
+        obj.mapDivs();
+        obj.calcN();
+        let time = setTimeout(life, 100, obj, evolution);
+    } else {
+        clearTimeout(time);
+    }
+}
