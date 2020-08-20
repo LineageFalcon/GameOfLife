@@ -36,7 +36,7 @@ class instanceOfLife {
 
     prepHost() {
         for(let i = 0; i < this.hostHeight; i++) {
-            for(let k = 0; k < this.hostHeight; k++) {
+            for(let k = 0; k < this.hostWidth; k++) {
                 this.host[i] = [];
                 this.futureHost[i] = [];
             }
