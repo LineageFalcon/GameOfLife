@@ -7,6 +7,9 @@ class instanceOfLife {
         this.wrapper;
         this.host= [];//will be fused to a twodimensional array
         this.futureHost = [];//same here
+        this.builder();
+        this.getDivs();
+        this.prepHost();// prepare methods
     }
 
     builder() {
@@ -126,13 +129,9 @@ class instanceOfLife {
         this.copyHost();
         this.formatDivs();
     }
-
 }
 
-let X = new instanceOfLife(10, 100);
-X.builder();
-X.getDivs();
-X.prepHost();// prepare methods
+let X = new instanceOfLife(100, 100);
 
 life(X);
 
