@@ -7,6 +7,7 @@ class instanceOfGrid {
         this.wrapper;
         this.grid = [];//will be fused to a twodimensional array
         this.renderGrid = [];//same here
+        
         this.createGrid();
         this.getDivs();
         this.createArray();// prepare methods
