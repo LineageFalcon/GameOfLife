@@ -1,24 +1,24 @@
-class instanceOfLife {
-    constructor(hostHeight = 3, hostWidth = 3) {
-        this.hostHeight = hostHeight;// going to be a user input
-        this.hostWidth = hostWidth;// going to be a user input
-        this.areaSize = hostHeight * hostWidth;//used in for-loops
-        this.items = [];//holds the div obj from the DOM
+class instanceOfGrid {
+    constructor(height = 3, width = 3) {
+        this.height = height;// going to be a user input
+        this.width = width;// going to be a user input
+        this.areaSize = height * width;//used in for-loops
+        this.divElements = [];//holds the div obj from the DOM
         this.wrapper;
-        this.host= [];//will be fused to a twodimensional array
-        this.futureHost = [];//same here
-        this.builder();
+        this.grid = [];//will be fused to a twodimensional array
+        this.renderGrid = [];//same here
+        this.createGrid();
         this.getDivs();
-        this.prepHost();// prepare methods
+        this.createArray();// prepare methods
     }
 
-    builder() {
+    createGrid() {
         let body = document.getElementsByTagName('body')[0];
         let section = document.createElement('section');
         body.appendChild(section);
         this.wrapper = section;
-        section.style.gridTemplateColumns = 'repeat(' + this.hostHeight + ', auto)';
-        section.style.gridTemplateRows = 'repeat(' + this.hostWidth + ', auto)';
+        section.style.gridTemplateColumns = 'repeat(' + this.height + ', auto)';
+        section.style.gridTemplateRows = 'repeat(' + this.width + ', auto)';
         for(let i = 0; i < this.areaSize; i++){
             let div = document.createElement('div');
             let ran = Math.round(Math.random());
@@ -33,113 +33,122 @@ class instanceOfLife {
 
     getDivs() {
         for(let i = 0; i < (this.areaSize); i++) {
-            this.items[i] = this.wrapper.getElementsByTagName('div')[i];
+            this.divElements[i] = this.wrapper.getElementsByTagName('div')[i];
         }
     }
 
-    prepHost() {
-        for(let i = 0; i < this.hostHeight; i++) {
-            for(let k = 0; k < this.hostWidth; k++) {
-                this.host[i] = [];
-                this.futureHost[i] = [];
+    createArray() {
+        for(let i = 0; i < this.height; i++) {
+            for(let k = 0; k < this.width; k++) {
+                this.grid[i] = [];
+                this.renderGrid[i] = [];
             }
         }
     }
 
-    copyHost() {
-        for(let i = 0; i < this.hostHeight; i++) {
-            for(let k = 0; k < this.hostWidth; k++) {
-                this.host[i][k] = this.futureHost[i][k];
-                this.futureHost[i][k] = 0;
+    copyGrid() {
+        for(let i = 0; i < this.height; i++) {
+            for(let k = 0; k < this.width; k++) {
+                this.grid[i][k] = this.renderGrid[i][k];
+                this.renderGrid[i][k] = 0;
             }
         }
     }
 
+    //get the value of divs and push it into the Grid-Array in 0 and 1 as dead and alive
     mapDivs() {
         let index = 0;
-        for(let i = 0; i < this.hostHeight; i++) {
-            for(let k = 0; k < this.hostWidth; k++) {
-                if(this.items[index].getAttribute('class') == 'alive'){
-                    this.host[i][k] = 1;
+        for(let i = 0; i < this.height; i++) {
+            for(let k = 0; k < this.width; k++) {
+                if(this.divElements[index].getAttribute('class') == 'alive'){
+                    this.grid[i][k] = 1;
                 } else {
-                    this.host[i][k] = 0;
+                    this.grid[i][k] = 0;
                 }
                 index++;
             }
         }
     }
 
-    formatDivs() {
+    setDivs() {
         let index = 0;
-        for(let i = 0; i < this.hostHeight; i++) {
-            for(let k = 0; k < this.hostWidth; k++) {
-                if(this.host[i][k] == 1) {
-                    this.items[index].setAttribute('class', 'alive');
+        for(let i = 0; i < this.height; i++) {
+            for(let k = 0; k < this.width; k++) {
+                if(this.grid[i][k] == 1) {
+                    this.divElements[index].setAttribute('class', 'alive');
                 } else {
-                    this.items[index].setAttribute('class', 'dead');
+                    this.divElements[index].setAttribute('class', 'dead');
                 }
                 index++;
             }
         }
     }
 
-    calcN() {
-        for(let i = 0; i < this.hostHeight; i++) {
-            for(let k = 0; k < this.hostWidth; k++){
+    applyRules(i, k, count) {
+        switch(this.grid[i][k]) {
+            case 1: switch(count) {
+                case 2: this.renderGrid[i][k] = 1;
+                break;
+                case 3: this.renderGrid[i][k] = 1;
+                break;
+                default: this.renderGrid[i][k] = 0;
+                break;
+                }
+            break;
+            case 0: if(count == 3) {this.renderGrid[i][k] = 1;} else {this.renderGrid[i][k] = 0;}
+            break;
+        }
+    }
+
+    calcNeighbours() {
+        for(let i = 0; i < this.height; i++) {
+            for(let k = 0; k < this.width; k++){
                 let count = 0;
                 if(i - 1 >= 0) {
-                    if(this.host[i - 1][k] == 1) {count++;}
+                    if(this.grid[i - 1][k] == 1) {count++;}
                 }
-                if(i + 1 < this.hostHeight) {
-                    if(this.host[i + 1][k] == 1) {count++;}
+                if(i + 1 < this.height) {
+                    if(this.grid[i + 1][k] == 1) {count++;}
                 }
                 if(k - 1 >= 0) {
-                    if(this.host[i][k - 1] == 1) {count++;}
+                    if(this.grid[i][k - 1] == 1) {count++;}
                 }
-                if(k + 1 < this.hostWidth) {
-                    if(this.host[i][k + 1] == 1) {count++;}
+                if(k + 1 < this.width) {
+                    if(this.grid[i][k + 1] == 1) {count++;}
                 }
                 if(i - 1 >= 0 && k - 1 >= 0) {
-                    if(this.host[i - 1][k - 1]) {count++;}
+                    if(this.grid[i - 1][k - 1]) {count++;}
                 }
-                if(i - 1 >= 0 && k + 1 < this.hostWidth) {
-                    if(this.host[i - 1][k + 1]) {count++;}
+                if(i - 1 >= 0 && k + 1 < this.width) {
+                    if(this.grid[i - 1][k + 1]) {count++;}
                 }
-                if(i + 1 < this.hostHeight && k + 1 < this.hostWidth) {
-                    if(this.host[i + 1][k + 1]) {count++;}
+                if(i + 1 < this.height && k + 1 < this.width) {
+                    if(this.grid[i + 1][k + 1]) {count++;}
                 }
-                if(i + 1 < this.hostHeight && k - 1 >= 0) {
-                    if(this.host[i + 1][k - 1]) {count++;}
+                if(i + 1 < this.height && k - 1 >= 0) {
+                    if(this.grid[i + 1][k - 1]) {count++;}
                 }
-                switch(this.host[i][k]) {
-                    case 1: switch(count) {
-                        case 2: this.futureHost[i][k] = 1;
-                        break;
-                        case 3: this.futureHost[i][k] = 1;
-                        break;
-                        default: this.futureHost[i][k] = 0;
-                        break;
-                        }
-                    break;
-                    case 0: if(count == 3) {this.futureHost[i][k] = 1;} else {this.futureHost[i][k] = 0;}
-                    break;
-                }
+                this.applyRules(i, k, count);
             }
         }
-        this.copyHost();
-        this.formatDivs();
+    }
+
+    renderStep() {
+        this.mapDivs();
+        this.calcNeighbours();
+        this.copyGrid();
+        this.setDivs();
     }
 }
 
-let X = new instanceOfLife(100, 100);
+let X = new instanceOfGrid(100, 100);
 
-life(X);
+play(X);
 
-function life(obj, evolution = true) {
+function play(obj, evolution = true) {
     if (evolution) {
-        obj.mapDivs();
-        obj.calcN();
-        let time = setTimeout(life, 100, obj, evolution);
+        obj.renderStep();
+        let time = setTimeout(play, 100, obj, evolution);
     } else {
         clearTimeout(time);
     }
