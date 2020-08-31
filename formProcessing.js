@@ -18,7 +18,7 @@ class instanceOfForm {
         this.form.wrapper = section;
         section.style.gridTemplateColumns = 'repeat(' + this.userInput.height + ', auto)';
         section.style.gridTemplateRows = 'repeat(' + this.userInput.width + ', auto)';
-        for(let i = 0; i < this.areaSize; i++){
+        for(let i = 0; i < this.form.areaSize; i++){
             let div = document.createElement('div');
             let ran = Math.round(Math.random());
             if (ran == 1) {
