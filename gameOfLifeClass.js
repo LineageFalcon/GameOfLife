@@ -1,4 +1,4 @@
-class instanceOfGrid {
+class Grid {
     constructor(height = 3, width = 3) {
         this.height = height;// going to be a user input
         this.width = width;// going to be a user input

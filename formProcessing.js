@@ -1,4 +1,4 @@
-class instanceOfForm {
+class Form {
     constructor() {
 
     }

@@ -1,5 +1,5 @@
 //import instanceOfGrid from 'gameOfLifeClass';
-let X = new instanceOfGrid(50, 50);
+let X = new Grid(50, 50);
 
 play(X);
 
