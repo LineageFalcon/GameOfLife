@@ -6,7 +6,7 @@ And a private project just to do something instead of just thinking about how ni
 
 ## How to commit
 
-In the best case you use this emojis to declare the topic of your commit.
+In the best case you use this emojis to declare the topic of your commit.</br>
 📝 : Edit</br>
 🔧 : Test</br>
 🐞 : Bugfix</br>
