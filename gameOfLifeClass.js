@@ -4,7 +4,7 @@ class instanceOfGrid {
         this.width = width;// going to be a user input
         this.areaSize = height * width;//used in for-loops
         this.divElements = [];//holds the div obj from the DOM
-        this.wrapper;
+        this.wrapper = document.createElement('section');
         this.grid = [];//will be fused to a twodimensional array
         this.renderGrid = [];//same here
         
@@ -15,19 +15,17 @@ class instanceOfGrid {
 
     createGrid() {
         let body = document.getElementsByTagName('body')[0];
-        let section = document.createElement('section');
-        body.appendChild(section);
-        this.wrapper = section;
+        body.appendChild(this.wrapper);
         section.style.gridTemplateColumns = 'repeat(' + this.height + ', auto)';
         section.style.gridTemplateRows = 'repeat(' + this.width + ', auto)';
         for(let i = 0; i < this.areaSize; i++){
             let div = document.createElement('div');
             let ran = Math.round(Math.random());
             if (ran == 1) {
-                section.appendChild(div).setAttribute('class', 'alive');
+                this.wrapper.appendChild(div).setAttribute('class', 'alive');
             }
             else {
-                section.appendChild(div).setAttribute('class', 'dead');
+                this.wrapper.appendChild(div).setAttribute('class', 'dead');
             }
         }
     }
