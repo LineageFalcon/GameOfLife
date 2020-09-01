@@ -1,11 +1,15 @@
-//import instanceOfGrid from 'gameOfLifeClass';
-let X = new instanceOfGrid(50, 50);
+//import 'gameOfLifeClass';
+//import 'formProcessing';
 
-play(X);
+let userInput = new UserInput(50, 50);
+let grid = new instanceOfGrid(userInput); 
+let form = new instanceOfForm(userInput, new Form(userInput));
 
-function play(obj, evolution = true) {
+play(grid, form);
+
+function play(grid, form, evolution = true) {
     if (evolution) {
-        obj.renderStep();
+        form.renderStep(grid); //redering is done from form with params (grid)
         let time = setTimeout(play, 100, obj, evolution);
     } else {
         clearTimeout(time);

@@ -1,46 +1,20 @@
+
+//import UserInput from 'formProcessing';
+
 class instanceOfGrid {
-    constructor(height = 3, width = 3) {
-        this.height = height;// going to be a user input
-        this.width = width;// going to be a user input
-        this.areaSize = height * width;//used in for-loops
-        this.divElements = [];//holds the div obj from the DOM
-        this.wrapper;
+    constructor(userInput) {
+
+        this.userInput = userInput;
+
         this.grid = [];//will be fused to a twodimensional array
         this.renderGrid = [];//same here
-        
-        this.createGrid();
-        this.getDivs();
-        this.createArray();// prepare methods
+
+        this.createGridArray();// prepare methods
     }
 
-    createGrid() {
-        let body = document.getElementsByTagName('body')[0];
-        let section = document.createElement('section');
-        body.appendChild(section);
-        this.wrapper = section;
-        section.style.gridTemplateColumns = 'repeat(' + this.height + ', auto)';
-        section.style.gridTemplateRows = 'repeat(' + this.width + ', auto)';
-        for(let i = 0; i < this.areaSize; i++){
-            let div = document.createElement('div');
-            let ran = Math.round(Math.random());
-            if (ran == 1) {
-                section.appendChild(div).setAttribute('class', 'alive');
-            }
-            else {
-                section.appendChild(div).setAttribute('class', 'dead');
-            }
-        }
-    }
-
-    getDivs() {
-        for(let i = 0; i < (this.areaSize); i++) {
-            this.divElements[i] = this.wrapper.getElementsByTagName('div')[i];
-        }
-    }
-
-    createArray() {
-        for(let i = 0; i < this.height; i++) {
-            for(let k = 0; k < this.width; k++) {
+    createGridArray() {
+        for(let i = 0; i < this.userInput.height; i++) {
+            for(let k = 0; k < this.userInput.width; k++) {
                 this.grid[i] = [];
                 this.renderGrid[i] = [];
             }
@@ -48,39 +22,10 @@ class instanceOfGrid {
     }
 
     copyGrid() {
-        for(let i = 0; i < this.height; i++) {
-            for(let k = 0; k < this.width; k++) {
+        for(let i = 0; i < this.userInput.height; i++) {
+            for(let k = 0; k < this.userInput.width; k++) {
                 this.grid[i][k] = this.renderGrid[i][k];
                 this.renderGrid[i][k] = 0;
-            }
-        }
-    }
-
-    //get the value of divs and push it into the Grid-Array in 0 and 1 as dead and alive
-    mapDivs() {
-        let index = 0;
-        for(let i = 0; i < this.height; i++) {
-            for(let k = 0; k < this.width; k++) {
-                if(this.divElements[index].getAttribute('class') == 'alive'){
-                    this.grid[i][k] = 1;
-                } else {
-                    this.grid[i][k] = 0;
-                }
-                index++;
-            }
-        }
-    }
-
-    setDivs() {
-        let index = 0;
-        for(let i = 0; i < this.height; i++) {
-            for(let k = 0; k < this.width; k++) {
-                if(this.grid[i][k] == 1) {
-                    this.divElements[index].setAttribute('class', 'alive');
-                } else {
-                    this.divElements[index].setAttribute('class', 'dead');
-                }
-                index++;
             }
         }
     }
@@ -102,19 +47,19 @@ class instanceOfGrid {
     }
 
     calcNeighbours() {
-        for(let i = 0; i < this.height; i++) {
-            for(let k = 0; k < this.width; k++){
+        for(let i = 0; i < this.userInput.height; i++) {
+            for(let k = 0; k < this.userInput.width; k++){
                 let count = 0;
                 if(i - 1 >= 0) {
                     if(this.grid[i - 1][k] == 1) {count++;}
                 }
-                if(i + 1 < this.height) {
+                if(i + 1 < this.userInput.height) {
                     if(this.grid[i + 1][k] == 1) {count++;}
                 }
                 if(k - 1 >= 0) {
                     if(this.grid[i][k - 1] == 1) {count++;}
                 }
-                if(k + 1 < this.width) {
+                if(k + 1 < this.userInput.width) {
                     if(this.grid[i][k + 1] == 1) {count++;}
                 }
                 if(i - 1 >= 0 && k - 1 >= 0) {
@@ -123,21 +68,14 @@ class instanceOfGrid {
                 if(i - 1 >= 0 && k + 1 < this.width) {
                     if(this.grid[i - 1][k + 1]) {count++;}
                 }
-                if(i + 1 < this.height && k + 1 < this.width) {
+                if(i + 1 < this.userInput.height && k + 1 < this.userInput.width) {
                     if(this.grid[i + 1][k + 1]) {count++;}
                 }
-                if(i + 1 < this.height && k - 1 >= 0) {
+                if(i + 1 < this.userInput.height && k - 1 >= 0) {
                     if(this.grid[i + 1][k - 1]) {count++;}
                 }
                 this.applyRules(i, k, count);
             }
         }
-    }
-
-    renderStep() {
-        this.mapDivs();
-        this.calcNeighbours();
-        this.copyGrid();
-        this.setDivs();
     }
 }
