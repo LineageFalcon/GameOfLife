@@ -17,5 +17,6 @@ In the best case you use this emojis to declare the topic of your commit.
 - all main methods can be found in the code inside of app.js
 
 ## What needs to be done ?
+- [ ] refine code
 - [ ] creating a form for userinput
 - [ ] make it possible to change the cell via cursor and drawing in them before and while the evolution is stopt
