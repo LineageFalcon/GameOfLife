@@ -1,6 +1,3 @@
-//function class handling the userinput etc
-//import 'gameOfLifeClass';
-
 class Grid {
     constructor(userInput) {
 
@@ -80,7 +77,7 @@ class Grid {
     }
 }
 
-class FormHandler {
+class Interface {
     constructor(userInput, form) {
 
         this.userInput = userInput;
