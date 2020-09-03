@@ -16,8 +16,8 @@ class instanceOfGrid {
     createGrid() {
         let body = document.getElementsByTagName('body')[0];
         body.appendChild(this.wrapper);
-        section.style.gridTemplateColumns = 'repeat(' + this.height + ', auto)';
-        section.style.gridTemplateRows = 'repeat(' + this.width + ', auto)';
+        this.wrapper.style.gridTemplateColumns = 'repeat(' + this.height + ', auto)';
+        this.wrapper.style.gridTemplateRows = 'repeat(' + this.width + ', auto)';
         for(let i = 0; i < this.areaSize; i++){
             let div = document.createElement('div');
             let ran = Math.round(Math.random());
