@@ -28,100 +28,99 @@ form > div {
     height: 45px;
 }
 
-@supports(-webkit-appearance: none) or (-moz-appearance: none) {
-    input[type='checkbox'],
-    input[type='number'],
-    select,
-    button{
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      --active: #e85d04;
-      --active-inner: #fff;
-      --focus: 2px rgba(232, 93, 4, .25);
-      --border: #BBC1E1;
-      --border-hover: #f48c06;
-      --background: #fff;
-      --disabled: #F6F8FF;
-      --disabled-inner: #E1E6F9;
-      height: 25px;
-      border-radius: 1px;
-    }
+// @supports(-webkit-appearance: none) or (-moz-appearance: none) {
+//     input[type='checkbox'],
+//     input[type='number'],
+//     select,
+//     button{
+//       -webkit-appearance: none;
+//       -moz-appearance: none;
+//       --active: #e85d04;
+//       --active-inner: #fff;
+//       --focus: 2px rgba(232, 93, 4, .25);
+//       --border: #BBC1E1;
+//       --border-hover: #f48c06;
+//       --background: #fff;
+//       --disabled: #F6F8FF;
+//       --disabled-inner: #E1E6F9;
+//       height: 25px;
+//       border-radius: 1px;
+//     }
 
-    input[type='checkbox'] {
-        width: 25px;
-        margin: 0;
-        border: 2px solid var(--active-inner);
-    }
+//     input[type='checkbox'] {
+//         width: 25px;
+//         margin: 0;
+//         border: 2px solid var(--active-inner);
+//     }
 
-    input[type='checkbox']:after {
-        width: 5px;
-        height: 9px;
-        border: 2px solid var(--active-inner);
-        border-top: 0;
-        border-left: 0;
-        left: 7px;
-        top: 4px;
-        transform: rotate(var(--r, 20deg));
-    }
+//     input[type='checkbox']:after {
+//         width: 5px;
+//         height: 9px;
+//         border: 2px solid var(--active-inner);
+//         border-top: 0;
+//         border-left: 0;
+//         left: 7px;
+//         top: 4px;
+//         transform: rotate(var(--r, 20deg));
+//     }
 
-    input[type='checkbox']:checked {
-        --b: var(--active);
-        --bc: var(--active);
-        --r: 43deg;
-    }
+//     input[type='checkbox']:checked {
+//         --b: var(--active);
+//         --bc: var(--active);
+//         --r: 43deg;
+//     }
 
-    input[type='number'] {
-        height: 25px;
-    }
+//     input[type='number'] {
+//         height: 25px;
+//     }
 
-    select {
-        padding-left: 5px;
-    }
+//     select {
+//         padding-left: 5px;
+//     }
 
-    button {
-        width: 80%;
-        border: none;
-        border-radius: 1px;
-    }
+//     button {
+//         width: 80%;
+//         border: none;
+//         border-radius: 1px;
+//     }
 
-    input[type='checkbox'],
-    input[type='number'],
-    select {
-        border: 2px solid var(--border);
-        background: var(--background);
-        border: 1px solid var(--bc, var(--border));
-    }
+//     input[type='checkbox'],
+//     input[type='number'],
+//     select {
+//         border: 2px solid var(--border);
+//         background: var(--background);
+//         border: 1px solid var(--bc, var(--border));
+//     }
 
-    input[type='checkbox']:active,
-    input[type='number']:active,
-    select:active {
-        border: 2px solid var(--active);
-        background: var(--active-inner);
-    }
+//     input[type='checkbox']:active,
+//     input[type='number']:active,
+//     select:active {
+//         border: 2px solid var(--active);
+//         background: var(--active-inner);
+//     }
 
-    input[type='checkbox']:hover,
-    input[type='number']:hover,
-    select:hover {
-        border: 2px solid var(--border-hover);
-        background: var(--active-inner);
-    }
+//     input[type='checkbox']:hover,
+//     input[type='number']:hover,
+//     select:hover {
+//         border: 2px solid var(--border-hover);
+//         background: var(--active-inner);
+//     }
 
-    button:hover {
-        background: var(--border-hover);
-        color: #fff;
-    }
-
-  }
+//     button:hover {
+//         background: var(--border-hover);
+//         color: #fff;
+//     }
+//   }
 
 
   @supports(-webkit-appearance: none) or (-moz-appearance: none) {
     input[type='checkbox'],
     input[type='radio'] {
-      --active: #275EFE;
+      --active: #e85d04;
       --active-inner: #fff;
-      --focus: 2px rgba(39, 94, 254, .3);
+      --focus: 2px rgba(232, 93, 4, .3);
       --border: #BBC1E1;
-      --border-hover: #275EFE;
+      --border-hover: #f48c06;
       --background: #fff;
       --disabled: #F6F8FF;
       --disabled-inner: #E1E6F9;
