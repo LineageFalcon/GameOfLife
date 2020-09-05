@@ -10,9 +10,10 @@ section {
     background: dimgrey;
 }
 
-form {
+#form {
     display: flex;
     flex-flow: column nowrap;
+    height: auto;
     width: 100%;
     align-items: center;
     align-content: center;
@@ -21,7 +22,7 @@ form {
     color: #fff;
 }
 
-form > div {
+#form > div {
     display: flex;
     flex-flow: column nowrap;
     width: 80%;

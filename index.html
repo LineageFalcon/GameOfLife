@@ -20,28 +20,28 @@
     </head>
     <body>
         <section>
-            <form>
+            <div id="form">
                 <div>
                     <label for="height">Height</label>
-                    <input type="number" name="height" id="height">
+                    <input type="number" name="height" id="height" value="50">
                 </div>
                 
                 <div>
                     <label for="width">Width</label>
-                    <input type="number" name="width" id="width">
+                    <input type="number" name="width" id="width" value="50">
                 </div>
 
                 <div>
                     <label for="iterations">Iterations</label>
-                    <input type="number" name="iterations" id="iterations">
+                    <input type="number" name="iterations" id="iterations" value="0">
                 </div>
 
                 <div>
                     <label for="evoSpeed">Iteration speed</label>
                     <select name="evoSpeed" id="evoSpeed">
-                        <option>Not yet implemented</option>
-                        <option>Not yet implemented</option>
-                        <option>Not yet implemented</option>
+                        <option>100</option>
+                        <option>250</option>
+                        <option>500</option>
                     </select>
                 </div>
                 
@@ -50,7 +50,7 @@
                     <input type="checkbox" name="randomOn" id="randomOn">
                 </div>
                 
-                <button>Start</button>
+                <button id="start">Start</button>
                 <button>Pause</button>
                 <button>Step</button>
 
@@ -58,7 +58,7 @@
                 and a button to start, stop and move it forward one step and maybe later a button for replay and or a step back
                 used with a array containing the arrays in the class itself. 
                 Furthermore it needs a tickbox for selecting random layout or and a selectBox for choosing precreated layouts like a template-->
-            </form>
+            </div>
         </section>
     </body>
     <!-- <script src="./app.js"></script> -->
