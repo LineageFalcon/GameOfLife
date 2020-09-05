@@ -89,19 +89,18 @@ class Interface {
 
     createFormGrid() {
         let body = document.getElementsByTagName('body')[0];
-        let section = document.createElement('section');
-        body.appendChild(section);
-        this.form.wrapper = section;
-        section.style.gridTemplateColumns = 'repeat(' + this.userInput.height + ', auto)';
-        section.style.gridTemplateRows = 'repeat(' + this.userInput.width + ', auto)';
+        body.appendChild(this.form.wrapper);
+        this.form.wrapper.setAttribute('class', 'grid');
+        this.form.wrapper.style.gridTemplateColumns = 'repeat(' + this.userInput.height + ', auto)';
+        this.form.wrapper.style.gridTemplateRows = 'repeat(' + this.userInput.width + ', auto)';
         for(let i = 0; i < this.form.areaSize; i++){
             let div = document.createElement('div');
             let ran = Math.round(Math.random());
             if (ran == 1) {
-                section.appendChild(div).setAttribute('class', 'alive');
+                this.form.wrapper.appendChild(div).setAttribute('class', 'alive');
             }
             else {
-                section.appendChild(div).setAttribute('class', 'dead');
+                this.form.wrapper.appendChild(div).setAttribute('class', 'dead');
             }
         }
     }
@@ -163,6 +162,6 @@ class Form{
     constructor(userInput){
         this.areaSize = userInput.height * userInput.width;//used in for-loops
         this.divElements = [];//holds the div obj from the DOM
-        this.wrapper;
+        this.wrapper = document.createElement('section');
     }
 }
