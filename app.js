@@ -6,6 +6,7 @@ play(grid, form);
 
 function play(grid, form, evolution = true) {
     let time;
+    let time;
     if (evolution) {
         form.renderStep(grid); //redering is done from form with params (grid)
         time = setTimeout(play, 100, grid, form, evolution);
