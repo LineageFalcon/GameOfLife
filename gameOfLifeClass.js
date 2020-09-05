@@ -141,12 +141,12 @@ class instanceOfGrid {
     }
 }
 
-let height = document.getElementById('height').value;
-let width = document.getElementById('width').value;
-
-let grid = new instanceOfGrid(height, width);
-
-document.getElementById('start').addEventListener('click', function() { play(grid); });
+document.getElementById('start').addEventListener('click', function() {
+    let height = document.getElementById('height').value;
+    let width = document.getElementById('width').value;
+    let grid = new instanceOfGrid(height, width); 
+    play(grid);
+});
 // play(grid);
 
 function play(obj, evolution = true) {
