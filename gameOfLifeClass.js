@@ -140,3 +140,16 @@ class instanceOfGrid {
         this.setDivs();
     }
 }
+
+let grid = new instanceOfGrid(50, 50);
+
+play(grid);
+
+function play(obj, evolution = true) {
+    if (evolution) {
+        obj.renderStep(); //redering is done from form with params (grid)
+        time = setTimeout(play, 100, obj,  evolution);
+    } else {
+        clearTimeout(time);
+    }
+}
