@@ -1,5 +1,5 @@
 window {
-
+    /* just sits here for adjustment purposes, maybe */
 }
 
 body {
@@ -9,15 +9,19 @@ body {
     height: 100vh;
     width: 100vw;
     box-sizing: border-box;
-    flex-flow: row wrap;
+    flex-flow: row nowrap;
     align-content: center;
-    justify-content: center;
+    justify-content: space-between;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-section {
+section.grid {
+    position: relative;
     display: grid;
-    /* height: 30px;
-    width: 30px; */
+    height: fit-content;
+    max-height: 100%;
+    width: fit-content;
+    max-width: 75%;
     grid-template-rows: repeat(3, auto);
     grid-template-columns: repeat(3, auto);
 }
@@ -37,3 +41,61 @@ div.alive {
 div.dead {
     background-color: white;
 }
+
+/* new section for the form which can be packt into a new separat file later */
+section {
+    position: relative;
+    display: flex;
+    height: 100%;
+    width: 25%;
+    background: dimgrey;
+}
+
+form {
+    display: flex;
+    flex-flow: column nowrap;
+    width: 100%;
+    align-content: center;
+    justify-content: space-evenly;
+}
+
+@supports(-webkit-appearance: none) or (-moz-appearance: none) {
+    input[type='checkbox'],
+    input[type='number'],
+    select,
+    button{
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      --active: #e85d04;
+      --active-inner: #fff;
+      --focus: 2px rgba(232, 93, 4, .25);
+      --border: #BBC1E1;
+      --border-hover: #f48c06;
+      --background: #fff;
+      --disabled: #F6F8FF;
+      --disabled-inner: #E1E6F9;
+      height: 25px;
+      min-width: 15px;
+      max-width: 150px;
+    }
+
+    input[type='checkbox'],
+    input[type='number'],
+    select,
+    button{
+        border: 1px solid var(--border);
+        background: var(--background);
+    }
+
+    input[type='checkbox']:active,
+    input[type='number']:active,
+    select:active,
+    button:active{
+        border: 1px solid var(--border);
+        background: var(--active-inner);
+    }
+
+
+  }
+
+
