@@ -15,26 +15,44 @@
         <meta http-equiv="expires" content="0"> 
 
         <link rel="stylesheet" href="main.css">
-        <script src="./logic.js"></script>
+        <!-- <script src="./logic.js"></script> -->
     </head>
     <body>
         <section>
             <form>
                 <!-- labels müssen noch hinzugefügt werden -->
-                <input type="number">
-                <input type="number">
-                <input type="number">
-                <select>
-                    <option>Not yet implemented</option>
-                    <option>Not yet implemented</option>
-                    <option>Not yet implemented</option>
-                </select>
+                <div>
+                    <label for="height">Height</label>
+                    <input type="number" name="height" id="height">
+                </div>
+                
+                <div>
+                    <label for="width">Width</label>
+                    <input type="number" name="width" id="width">
+                </div>
+
+                <div>
+                    <label for="iterations">Iterations</label>
+                    <input type="number" name="iterations" id="iterations">
+                </div>
+
+                <div>
+                    <label for="evoSpeed">Iteration speed</label>
+                    <select name="evoSpeed" id="evoSpeed">
+                        <option>Not yet implemented</option>
+                        <option>Not yet implemented</option>
+                        <option>Not yet implemented</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="randomOn">Random ON</label>
+                    <input type="checkbox" name="randomOn" id="randomOn">
+                </div>
+                
                 <button>Start</button>
                 <button>Pause</button>
                 <button>Step</button>
-                <input type="checkbox" name="Randonm_ON" id="Random_ON">
-                <label for="Random ON">Random ON</label>
-
 
                 <!-- it needs three (sizex2 and one for the count iterations) numSelectBoxes with tooltip and placeholder, maybe a selectBox for the speed of evolution
                 and a button to start, stop and move it forward one step and maybe later a button for replay and or a step back
@@ -43,5 +61,6 @@
             </form>
         </section>
     </body>
-    <script src="./app.js"></script>
+    <!-- <script src="./app.js"></script> -->
+    <script src="./gameOfLifeClass.js" ></script>
 </html>

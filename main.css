@@ -60,6 +60,12 @@ form {
     justify-content: space-evenly;
 }
 
+form > div {
+    display: flex;
+    flex: row nowrap;
+    width: 80%;
+}
+
 @supports(-webkit-appearance: none) or (-moz-appearance: none) {
     input[type='checkbox'],
     input[type='number'],
