@@ -13,6 +13,13 @@ class instanceOfGrid {
         this.createArray();// prepare methods
     }
 
+    renderStep() {
+        this.mapDivs();
+        this.calcNeighbours();
+        this.copyGrid();
+        this.setDivs();
+    }
+
     createGrid() {
         let body = document.getElementsByTagName('body')[0];
         body.appendChild(this.wrapper);
@@ -131,13 +138,6 @@ class instanceOfGrid {
                 this.applyRules(i, k, count);
             }
         }
-    }
-
-    renderStep() {
-        this.mapDivs();
-        this.calcNeighbours();
-        this.copyGrid();
-        this.setDivs();
     }
 }
 
