@@ -14,10 +14,7 @@ class instanceOfGrid {
     }
 
     renderStep() {
-        this.mapDivs();
-        this.calcNeighbours();
-        this.copyGrid();
-        this.setDivs();
+        this.mapDivs().calcNeighbours().copyGrid().setDivs();
     }
 
     createGrid() {
@@ -60,6 +57,7 @@ class instanceOfGrid {
                 this.renderGrid[i][k] = 0;
             }
         }
+        return this;
     }
 
     //get the value of divs and push it into the Grid-Array in 0 and 1 as dead and alive
@@ -75,6 +73,7 @@ class instanceOfGrid {
                 index++;
             }
         }
+        return this;
     }
 
     setDivs() {
@@ -89,6 +88,7 @@ class instanceOfGrid {
                 index++;
             }
         }
+        return this;
     }
 
     applyRules(i, k, count) {
@@ -138,6 +138,7 @@ class instanceOfGrid {
                 this.applyRules(i, k, count);
             }
         }
+        return this;
     }
 }
 
