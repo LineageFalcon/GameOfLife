@@ -144,12 +144,13 @@ class instanceOfGrid {
 }
 
 document.getElementById('start').addEventListener('click', function() {
-    let height = document.getElementById('height').value;
+    let height = document.getElementById('height').value;// could be getters from a binded class obj
     let width = document.getElementById('width').value;
     let grid = new instanceOfGrid(height, width); 
     play(grid);
 });
-// play(grid);
+
+// play(grid); //regular function call -> not yet needed and revised
 
 function play(obj, evolution = true) {
     if (evolution) {
