@@ -8,9 +8,7 @@ class instanceOfGrid {
         this.grid = [];//will be fused to a twodimensional array
         this.renderGrid = [];//same here
         
-        this.createGrid();
-        this.getDivs();
-        this.createArray();// prepare methods
+        this.createGrid().getDivs().createArray();// prepare methods
     }
 
     renderStep() {
@@ -33,12 +31,14 @@ class instanceOfGrid {
                 this.wrapper.appendChild(div).setAttribute('class', 'dead');
             }
         }
+        return this;
     }
 
     getDivs() {
         for(let i = 0; i < (this.areaSize); i++) {
             this.divElements[i] = this.wrapper.getElementsByTagName('div')[i];
         }
+        return this;
     }
 
     createArray() {
@@ -48,6 +48,7 @@ class instanceOfGrid {
                 this.renderGrid[i] = [];
             }
         }
+        return this;
     }
 
     copyGrid() {
