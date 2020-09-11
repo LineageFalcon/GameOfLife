@@ -13,7 +13,7 @@ class instanceOfGrid {
 
     renderStep() {
         this.renderGridArray = JSON.parse(JSON.stringify(this.gridArray));;
-        this.mapDivs().calcNeighbours().copyGrid().setDivs();
+        this.mapDivs().calcNeighbours();
     }
 
     createGrid() { //wrapper needs to be looked into, if it is realy necessary to be in global scope !! Getter ?
@@ -70,6 +70,7 @@ class instanceOfGrid {
     }
 
     calcNeighbours() {
+        let array;
         for(let i = 0; i < this.height; i++) {
             for(let k = 0; k < this.width; k++){
                 let count = 0;
@@ -97,26 +98,38 @@ class instanceOfGrid {
                 if(i + 1 < this.height && k - 1 >= 0) {
                     if(this.gridArray[i + 1][k - 1]) {count++;}
                 }
-                this.applyRules(i, k, count);
+                array = this.applyRules(i, k, count, this.gridArray[i][k]);
             }
         }
+        this.setDivs(array);
         return this;
     }
 
-    applyRules(i, k, count) {
-        switch(this.gridArray[i][k]) {
-            case 1: switch(count) {
-                case 2: this.renderGridArray[i][k] = 1;
-                break;
-                case 3: this.renderGridArray[i][k] = 1;
-                break;
-                default: this.renderGridArray[i][k] = 0;
-                break;
-                }
-            break;
-            case 0: if(count == 3) {this.renderGridArray[i][k] = 1;} else {this.renderGridArray[i][k] = 0;}
-            break;
-        }
+    applyRules(i, k, count, cell) {
+        // switch(cell) {
+        //     case 1: switch(count) {
+        //         case 2: this.renderGridArray[i][k] = 1;
+        //         break;
+        //         case 3: this.renderGridArray[i][k] = 1;
+        //         break;
+        //         default: this.renderGridArray[i][k] = 0;
+        //         break;
+        //         }
+        //     break;
+        //     case 0: if(count == 3) {this.renderGridArray[i][k] = 1;} else {this.renderGridArray[i][k] = 0;}
+        //     break;
+        // }
+
+        let arrayNameHere = [];
+            if(cell == 1)
+                if(count < 2 || count > 3) 
+                    arrayNameHere.push({cell: 0, index: i*k}); //0 <- changes only here
+            else
+                if(count == 3) 
+                    arrayNameHere.push({cell: 1, index: i*k});
+                    
+
+        return arrayNameHere;
     }
 
     copyGrid() {
@@ -127,22 +140,38 @@ class instanceOfGrid {
         }
         return this;
     }
-
-    setDivs() {
-        let index = 0;
-        for(let i = 0; i < this.height; i++) {
-            for(let k = 0; k < this.width; k++) {
-                if(this.gridArray[i][k] == 1) {
-                    this.divElements[index].setAttribute('class', 'alive');
-                } else {
-                    this.divElements[index].setAttribute('class', 'dead');
-                }
-                index++;
-            }
+    
+    applyChanges(elem)
+    {
+        if(elem.cell == 1)
+        {
+            this.divElements[elem.index].setAttribute('class', 'alive');
+        } 
+        else 
+        {
+            this.divElements[elem.index].setAttribute('class', 'dead');
         }
+    }
+
+    setDivs(arrayWithChanges) {
+        //let index = 0;
+        // for(let i = 0; i < this.height; i++) {
+        //     for(let k = 0; k < this.width; k++) {
+        //         if(this.gridArray[i][k] == 1) {
+        //             this.divElements[index].setAttribute('class', 'alive');
+        //         } else {
+        //             this.divElements[index].setAttribute('class', 'dead');
+        //         }
+        //         index++;
+        //     }
+        // }
+
+        arrayWithChanges.forEach(elem => this.applyChanges(elem));
         return this;
     }
+
 }
+
 
 document.getElementById('start').addEventListener('click', function() {
     let height = document.getElementById('height').value;// could be getters from a binded class obj
