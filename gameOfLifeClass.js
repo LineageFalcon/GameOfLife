@@ -8,12 +8,25 @@ class instanceOfGrid {
         this.gridArray = [];//will be fused to a twodimensional array
         this.renderGridArray = [];//same here
         
-        this.createGrid().getDivs().createArray();// prepare methods
+        this.createGrid();
+        //let variabe = this.getDivs();
+        //let array  = this.createArray(height, width);// prepare methods
     }
 
     renderStep() {
-        this.renderGridArray = JSON.parse(JSON.stringify(this.gridArray));;
-        this.mapDivs().calcNeighbours();
+        let divs = this.getDivs();
+        let mapped = this.mapDivs(divs, this.createArray(this.height, this.width));
+        let applied = [];
+        for(let i = 0; i < this.height; i++) 
+        {
+            for(let k = 0; k < this.width; k++)
+            {
+                let count = this.calcNeighbours(i, k, mapped);
+                if(undefined !== this.applyRules(i, k, count, mapped[i][k]))
+                    applied.push(this.applyRules(i, k, count, mapped[i][k]));
+            }
+        }
+        this.setDivs(applied, divs);
     }
 
     createGrid() { //wrapper needs to be looked into, if it is realy necessary to be in global scope !! Getter ?
@@ -32,104 +45,84 @@ class instanceOfGrid {
                 this.wrapper.appendChild(div).setAttribute('class', 'dead');
             }
         }
-        return this;
     }
 
     getDivs() {
+        let uIDivs = [];
+        // for(let i = 0; i < (this.areaSize); i++) {
+        //     this.divElements[i] = this.wrapper.getElementsByTagName('div')[i];
+        // }
+
         for(let i = 0; i < (this.areaSize); i++) {
-            this.divElements[i] = this.wrapper.getElementsByTagName('div')[i];
+            uIDivs[i] = this.wrapper.getElementsByTagName('div')[i];
         }
-        return this;
+
+        return uIDivs;
     }
 
-    createArray() {
-        for(let i = 0; i < this.height; i++) {
-            for(let k = 0; k < this.width; k++) {
-                this.gridArray[i] = [];
+    createArray(height, width) {
+        let grid = [];
+        for(let i = 0; i < height; i++) 
+        {
+            for(let k = 0; k < width; k++) 
+            {
+                grid[i] = [];
             }
         }
-        this.renderGridArray = this.gridArray;
-
-        return this;
+        return grid;
     }
 
     //get the value of divs and push it into the Grid-Array in 0 and 1 as dead and alive
-    mapDivs() {
+    mapDivs(DivArray, grid) {
         let index = 0;
         for(let i = 0; i < this.height; i++) {
             for(let k = 0; k < this.width; k++) {
-                if(this.divElements[index].getAttribute('class') == 'alive'){
-                    this.gridArray[i][k] = 1;
+                if(DivArray[index].getAttribute('class') == 'alive'){
+                    grid[i][k] = 1;
                 } else {
-                    this.gridArray[i][k] = 0;
+                    grid[i][k] = 0;
                 }
                 index++;
             }
         }
-        return this;
+        return grid;
     }
 
-    calcNeighbours() {
-        let array;
-        for(let i = 0; i < this.height; i++) {
-            for(let k = 0; k < this.width; k++){
-                let count = 0;
-                if(i - 1 >= 0) {
-                    if(this.gridArray[i - 1][k] == 1) {count++;}
-                }
-                if(i + 1 < this.height) {
-                    if(this.gridArray[i + 1][k] == 1) {count++;}
-                }
-                if(k - 1 >= 0) {
-                    if(this.gridArray[i][k - 1] == 1) {count++;}
-                }
-                if(k + 1 < this.width) {
-                    if(this.gridArray[i][k + 1] == 1) {count++;}
-                }
-                if(i - 1 >= 0 && k - 1 >= 0) {
-                    if(this.gridArray[i - 1][k - 1]) {count++;}
-                }
-                if(i - 1 >= 0 && k + 1 < this.width) {
-                    if(this.gridArray[i - 1][k + 1]) {count++;}
-                }
-                if(i + 1 < this.height && k + 1 < this.width) {
-                    if(this.gridArray[i + 1][k + 1]) {count++;}
-                }
-                if(i + 1 < this.height && k - 1 >= 0) {
-                    if(this.gridArray[i + 1][k - 1]) {count++;}
-                }
-                array = this.applyRules(i, k, count, this.gridArray[i][k]);
-            }
+    calcNeighbours(i, k, mapped)
+    {
+        let count = 0;
+        if(i - 1 >= 0) {
+            if(mapped[i - 1][k] == 1) {count++;}
         }
-        this.setDivs(array);
-        return this;
+        if(i + 1 < this.height) {
+            if(mapped[i + 1][k] == 1) {count++;}
+        }
+        if(k - 1 >= 0) {
+            if(mapped[i][k - 1] == 1) {count++;}
+        }
+        if(k + 1 < this.width) {
+            if(mapped[i][k + 1] == 1) {count++;}
+        }
+        if(i - 1 >= 0 && k - 1 >= 0) {
+            if(mapped[i - 1][k - 1]) {count++;}
+        }
+        if(i - 1 >= 0 && k + 1 < this.width) {
+            if(mapped[i - 1][k + 1]) {count++;}
+        }
+        if(i + 1 < this.height && k + 1 < this.width) {
+            if(mapped[i + 1][k + 1]) {count++;}
+        }
+        if(i + 1 < this.height && k - 1 >= 0) {
+            if(mapped[i + 1][k - 1]) {count++;}
+        }
+        return count;
     }
 
     applyRules(i, k, count, cell) {
-        // switch(cell) {
-        //     case 1: switch(count) {
-        //         case 2: this.renderGridArray[i][k] = 1;
-        //         break;
-        //         case 3: this.renderGridArray[i][k] = 1;
-        //         break;
-        //         default: this.renderGridArray[i][k] = 0;
-        //         break;
-        //         }
-        //     break;
-        //     case 0: if(count == 3) {this.renderGridArray[i][k] = 1;} else {this.renderGridArray[i][k] = 0;}
-        //     break;
-        // }
-
-        let arrayNameHere = [];
-            if(cell == 1)
-                if(count < 2 || count > 3) 
-                    arrayNameHere.push({cell: 0, index: i*k}); //0 <- changes only here
-            else
-                if(count == 3) 
-                    arrayNameHere.push({cell: 1, index: i*k});
-                    
-
-        return arrayNameHere;
+                if(count < 2 || count > 3 && cell == 1) 
+                    return {cell: 0, index: ((this.width)*i)+k};
+                else if(count == 3 && cell == 0) 
+                    return {cell: 1, index: ((this.width)*i)+k};  
     }
 
     copyGrid() {
@@ -141,33 +134,20 @@ class instanceOfGrid {
         return this;
     }
     
-    applyChanges(elem)
+    applyChanges(elem, divs)
     {
-        if(elem.cell == 1)
-        {
-            this.divElements[elem.index].setAttribute('class', 'alive');
-        } 
-        else 
-        {
-            this.divElements[elem.index].setAttribute('class', 'dead');
-        }
+            if(elem.cell == 1)
+            {
+                divs[elem.index].setAttribute('class', 'alive');
+            } 
+            else 
+            {
+                divs[elem.index].setAttribute('class', 'dead');
+            }
     }
 
-    setDivs(arrayWithChanges) {
-        //let index = 0;
-        // for(let i = 0; i < this.height; i++) {
-        //     for(let k = 0; k < this.width; k++) {
-        //         if(this.gridArray[i][k] == 1) {
-        //             this.divElements[index].setAttribute('class', 'alive');
-        //         } else {
-        //             this.divElements[index].setAttribute('class', 'dead');
-        //         }
-        //         index++;
-        //     }
-        // }
-
-        arrayWithChanges.forEach(elem => this.applyChanges(elem));
-        return this;
+    setDivs(arrayWithChanges, divs) {
+        arrayWithChanges.forEach(elem => this.applyChanges(elem, divs));
     }
 
 }
