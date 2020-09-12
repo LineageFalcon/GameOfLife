@@ -3,30 +3,28 @@ class instanceOfGrid {
         this.height = height;// going to be a user input
         this.width = width;// going to be a user input
         this.areaSize = height * width;//used in for-loops
-        this.divElements = [];//holds the div obj from the DOM
         this.wrapper = document.createElement('section');
-        this.gridArray = [];//will be fused to a twodimensional array
-        this.renderGridArray = [];//same here
         
         this.createGrid();
-        //let variabe = this.getDivs();
-        //let array  = this.createArray(height, width);// prepare methods
     }
 
     renderStep() {
-        let divs = this.getDivs();
-        let mapped = this.mapDivs(divs, this.createArray(this.height, this.width));
-        let applied = [];
+        let divArray = this.getDivs();
+        let gridArray = this.createArray(this.height, this.width);
+        gridArray = this.mapDivs(divArray, gridArray);
+
+        let onlyChangesArray = [];
         for(let i = 0; i < this.height; i++) 
         {
             for(let k = 0; k < this.width; k++)
             {
-                let count = this.calcNeighbours(i, k, mapped);
-                if(undefined !== this.applyRules(i, k, count, mapped[i][k]))
-                    applied.push(this.applyRules(i, k, count, mapped[i][k]));
+                let count = this.calcNeighbours(i, k, gridArray);
+                if(undefined !== this.applyRules(i, k, count, gridArray[i][k]))// not efficient
+                    onlyChangesArray.push(this.applyRules(i, k, count, gridArray[i][k]));
             }
         }
-        this.setDivs(applied, divs);
+        //method for logic to get new array for the new grid --> maybe this can replace the acutal if closure
+        this.setDivs(onlyChangesArray, divArray);
     }
 
     createGrid() { //wrapper needs to be looked into, if it is realy necessary to be in global scope !! Getter ?
@@ -49,9 +47,6 @@ class instanceOfGrid {
 
     getDivs() {
         let uIDivs = [];
-        // for(let i = 0; i < (this.areaSize); i++) {
-        //     this.divElements[i] = this.wrapper.getElementsByTagName('div')[i];
-        // }
 
         for(let i = 0; i < (this.areaSize); i++) {
             uIDivs[i] = this.wrapper.getElementsByTagName('div')[i];
@@ -62,10 +57,8 @@ class instanceOfGrid {
 
     createArray(height, width) {
         let grid = [];
-        for(let i = 0; i < height; i++) 
-        {
-            for(let k = 0; k < width; k++) 
-            {
+        for(let i = 0; i < height; i++) {
+            for(let k = 0; k < width; k++) {
                 grid[i] = [];
             }
         }
@@ -73,56 +66,56 @@ class instanceOfGrid {
     }
 
     //get the value of divs and push it into the Grid-Array in 0 and 1 as dead and alive
-    mapDivs(DivArray, grid) {
+    mapDivs(divArray, gridArray) {
         let index = 0;
         for(let i = 0; i < this.height; i++) {
             for(let k = 0; k < this.width; k++) {
-                if(DivArray[index].getAttribute('class') == 'alive'){
-                    grid[i][k] = 1;
+                if(divArray[index].getAttribute('class') == 'alive'){
+                    gridArray[i][k] = 1;
                 } else {
-                    grid[i][k] = 0;
+                    gridArray[i][k] = 0;
                 }
                 index++;
             }
         }
-        return grid;
+        return gridArray;
     }
 
-    calcNeighbours(i, k, mapped)
+    calcNeighbours(i, k, gridArray)
     {
         let count = 0;
         if(i - 1 >= 0) {
-            if(mapped[i - 1][k] == 1) {count++;}
+            if(gridArray[i - 1][k] == 1) {count++;}
         }
         if(i + 1 < this.height) {
-            if(mapped[i + 1][k] == 1) {count++;}
+            if(gridArray[i + 1][k] == 1) {count++;}
         }
         if(k - 1 >= 0) {
-            if(mapped[i][k - 1] == 1) {count++;}
+            if(gridArray[i][k - 1] == 1) {count++;}
         }
         if(k + 1 < this.width) {
-            if(mapped[i][k + 1] == 1) {count++;}
+            if(gridArray[i][k + 1] == 1) {count++;}
         }
         if(i - 1 >= 0 && k - 1 >= 0) {
-            if(mapped[i - 1][k - 1]) {count++;}
+            if(gridArray[i - 1][k - 1]) {count++;}
         }
         if(i - 1 >= 0 && k + 1 < this.width) {
-            if(mapped[i - 1][k + 1]) {count++;}
+            if(gridArray[i - 1][k + 1]) {count++;}
         }
         if(i + 1 < this.height && k + 1 < this.width) {
-            if(mapped[i + 1][k + 1]) {count++;}
+            if(gridArray[i + 1][k + 1]) {count++;}
         }
         if(i + 1 < this.height && k - 1 >= 0) {
-            if(mapped[i + 1][k - 1]) {count++;}
+            if(gridArray[i + 1][k - 1]) {count++;}
         }
         return count;
     }
 
-    applyRules(i, k, count, cell) {
-                if(count < 2 || count > 3 && cell == 1) 
-                    return {cell: 0, index: ((this.width)*i)+k};
-                else if(count == 3 && cell == 0) 
-                    return {cell: 1, index: ((this.width)*i)+k};  
+    applyRules(i, k, count, gridArrayCell) {
+                if(count < 2 || count > 3 && gridArrayCell == 1) 
+                    return {gridArrayCell: 0, index: ((this.width)*i)+k};
+                else if(count == 3 && gridArrayCell == 0) 
+                    return {gridArrayCell: 1, index: ((this.width)*i)+k};  
     }
 
     copyGrid() {
@@ -134,20 +127,18 @@ class instanceOfGrid {
         return this;
     }
     
-    applyChanges(elem, divs)
+    applyChanges(elem, divArray)
     {
-            if(elem.cell == 1)
-            {
-                divs[elem.index].setAttribute('class', 'alive');
+            if(elem.gridArrayCell == 1) {
+                divArray[elem.index].setAttribute('class', 'alive');
             } 
-            else 
-            {
-                divs[elem.index].setAttribute('class', 'dead');
+            else {
+                divArray[elem.index].setAttribute('class', 'dead');
             }
     }
 
-    setDivs(arrayWithChanges, divs) {
-        arrayWithChanges.forEach(elem => this.applyChanges(elem, divs));
+    setDivs(onlyChangesArray, divArray) {
+        onlyChangesArray.forEach(elem => this.applyChanges(elem, divArray));
     }
 
 }
@@ -164,7 +155,7 @@ document.getElementById('start').addEventListener('click', function() {
 
 function play(obj, evolution = true) {
     if (evolution) {
-        obj.renderStep(); //redering is done from form with params (grid)
+        obj.renderStep(); //rendering is done from form with params (grid)
         time = setTimeout(play, 100, obj,  evolution);
     } else {
         clearTimeout(time);
