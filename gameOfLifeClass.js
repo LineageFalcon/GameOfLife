@@ -140,24 +140,46 @@ class instanceOfGrid {
     setDivs(onlyChangesArray, divArray) {
         onlyChangesArray.forEach(elem => this.applyChanges(elem, divArray));
     }
-
 }
 
-
 document.getElementById('start').addEventListener('click', function() {
-    let height = document.getElementById('height').value;// could be getters from a binded class obj
-    let width = document.getElementById('width').value;
-    let grid = new instanceOfGrid(height, width); 
-    play(grid);
+    const HEIGHT = document.getElementById('height').value;// could be getters from a binded class obj
+    const WIDTH = document.getElementById('width').value;
+    const ITERATIONS = document.getElementById('iterations').value;
+    const ANIMATION_SPEED = getOptionsValue('evoSpeed');
+    let grid = new instanceOfGrid(HEIGHT, WIDTH); 
+    play(grid, ANIMATION_SPEED, ITERATIONS);
 });
+
+function getOptionsValue(htmlElement) {
+    let value;
+    const ELEM = document.getElementById(htmlElement);
+    for (let i = 0; i < ELEM.options.length; i++ ) {
+        value = ELEM.options[i];
+        if ( value.selected === true ) {
+            break;
+        }
+    }
+    return value.text;
+}
 
 // play(grid); //regular function call -> not yet needed and revised
 
-function play(obj, evolution = true) {
-    if (evolution) {
+function play(obj, ANIMATION_SPEED = 100, ITERATIONS = true, runtime = 0) {
+    if (checkEvolution(ITERATIONS, runtime)) {
         obj.renderStep(); //rendering is done from form with params (grid)
-        time = setTimeout(play, 100, obj,  evolution);
+        runtime++;
+        time = setTimeout(play, ANIMATION_SPEED, obj, ANIMATION_SPEED, ITERATIONS, runtime);
     } else {
         clearTimeout(time);
+    }
+}
+
+function checkEvolution(ITERATIONS, runtime) {
+    if (runtime < ITERATIONS || ITERATIONS == -1) {
+        return true
+    }
+    else {
+        return false;
     }
 }
