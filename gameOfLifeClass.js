@@ -8,7 +8,7 @@ class instanceOfGrid {
         this.createGrid();
     }
 
-    renderStep() {
+    renderStep() { //integration class or stays in logic
         let divArray = this.getDivs();
         let gridArray = this.createArray(this.height, this.width);
         gridArray = this.mapDivs(divArray, gridArray);
@@ -24,10 +24,11 @@ class instanceOfGrid {
             }
         }
         //method for logic to get new array for the new grid --> maybe this can replace the acutal if closure
+
         this.setDivs(onlyChangesArray, divArray);
     }
 
-    createGrid() { //wrapper needs to be looked into, if it is realy necessary to be in global scope !! Getter ?
+    createGrid() { //DOM access --> DOM class
         let body = document.getElementsByTagName('body')[0];
         body.appendChild(this.wrapper);
         this.wrapper.setAttribute('class', 'grid');
@@ -45,28 +46,26 @@ class instanceOfGrid {
         }
     }
 
-    getDivs() {
+    getDivs() { //logic --> instanceOfLife class or DOM access --> DOM class
         let uIDivs = [];
-
         for(let i = 0; i < (this.areaSize); i++) {
             uIDivs[i] = this.wrapper.getElementsByTagName('div')[i];
         }
-
         return uIDivs;
     }
 
-    createArray(height, width) {
-        let grid = [];
+    createArray(height, width) { //logic --> instanceOfLife class
+        let gridArray = [];
         for(let i = 0; i < height; i++) {
             for(let k = 0; k < width; k++) {
-                grid[i] = [];
+                gridArray[i] = [];
             }
         }
-        return grid;
+        return gridArray;
     }
 
     //get the value of divs and push it into the Grid-Array in 0 and 1 as dead and alive
-    mapDivs(divArray, gridArray) {
+    mapDivs(divArray, gridArray) { //logic --> instanceOfLife class or DOM access --> DOM class
         let index = 0;
         for(let i = 0; i < this.height; i++) {
             for(let k = 0; k < this.width; k++) {
@@ -81,8 +80,7 @@ class instanceOfGrid {
         return gridArray;
     }
 
-    calcNeighbours(i, k, gridArray)
-    {
+    calcNeighbours(i, k, gridArray) { //logic --> instanceOfLife class
         let count = 0;
         if(i - 1 >= 0) {
             if(gridArray[i - 1][k] == 1) {count++;}
@@ -111,14 +109,14 @@ class instanceOfGrid {
         return count;
     }
 
-    applyRules(i, k, count, gridArrayCell) {
+    applyRules(i, k, count, gridArrayCell) { //logic --> instanceOfLife class
                 if(count < 2 || count > 3 && gridArrayCell == 1) 
                     return {gridArrayCell: 0, index: ((this.width)*i)+k};
                 else if(count == 3 && gridArrayCell == 0) 
                     return {gridArrayCell: 1, index: ((this.width)*i)+k};  
     }
 
-    copyGrid() {
+    copyGrid() { //logic --> instanceOfLife class
         for(let i = 0; i < this.height; i++) {
             for(let k = 0; k < this.width; k++) {
                 this.gridArray[i][k] = this.renderGridArray[i][k];
@@ -127,8 +125,7 @@ class instanceOfGrid {
         return this;
     }
     
-    applyChanges(elem, divArray)
-    {
+    applyChanges(elem, divArray) { //DOM access --> DOM class
             if(elem.gridArrayCell == 1) {
                 divArray[elem.index].setAttribute('class', 'alive');
             } 
@@ -137,10 +134,12 @@ class instanceOfGrid {
             }
     }
 
-    setDivs(onlyChangesArray, divArray) {
+    setDivs(onlyChangesArray, divArray) { //logic --> instanceOfLife class
         onlyChangesArray.forEach(elem => this.applyChanges(elem, divArray));
     }
 }
+
+//--- here begins the runtime code --> could be a class too ---
 
 document.getElementById('start').addEventListener('click', function() {
     const HEIGHT = document.getElementById('height').value;// could be getters from a binded class obj
