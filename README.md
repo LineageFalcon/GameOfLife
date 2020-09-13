@@ -11,6 +11,7 @@ In the best case you use this emojis to declare the topic of your commit.</br>
 🔧 : Test</br>
 🐞 : Bugfix</br>
 ➕ : File added</br>
+🗑️ : File deleted</br>
 
 ## How to use ? 
 - for now the object instanciation is hardcoded and the parameters can be changed there.
