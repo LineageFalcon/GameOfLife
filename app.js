@@ -3,7 +3,7 @@ let grid = new Grid(userInput);
 let form = new Interface(userInput, new Form(userInput));
 let time;
 
-play(grid, form);
+this.play(grid, form);
 
 function play(grid, form, evolution = true) {
     if (evolution) {

@@ -32,8 +32,8 @@ class instanceOfGrid {
         let body = document.getElementsByTagName('body')[0];
         body.appendChild(this.wrapper);
         this.wrapper.setAttribute('class', 'grid');
-        this.wrapper.style.gridTemplateColumns = 'repeat(' + this.height + ', auto)';
-        this.wrapper.style.gridTemplateRows = 'repeat(' + this.width + ', auto)';
+        this.wrapper.style.gridTemplateColumns = 'repeat(' + this.width+ ', auto)';
+        this.wrapper.style.gridTemplateRows = 'repeat(' + this.height + ', auto)';
         for(let i = 0; i < this.areaSize; i++){
             let div = document.createElement('div');
             let ran = Math.round(Math.random());
@@ -110,10 +110,14 @@ class instanceOfGrid {
     }
 
     applyRules(i, k, count, gridArrayCell) { //logic --> instanceOfLife class
-                if(count < 2 || count > 3 && gridArrayCell == 1) 
-                    return {gridArrayCell: 0, index: ((this.width)*i)+k};
-                else if(count == 3 && gridArrayCell == 0) 
-                    return {gridArrayCell: 1, index: ((this.width)*i)+k};  
+
+        //DO MATH
+        let uiIndex = ((this.width)*i)+k;
+
+        if(count < 2 || count > 3 && gridArrayCell == 1) 
+            return {gridArrayCell: 0, index: uiIndex};
+        else if(count == 3 && gridArrayCell == 0) 
+            return {gridArrayCell: 1, index: uiIndex};  
     }
 
     copyGrid() { //logic --> instanceOfLife class
@@ -165,6 +169,7 @@ function getOptionsValue(htmlElement) {
 // play(grid); //regular function call -> not yet needed and revised
 
 function play(obj, ANIMATION_SPEED = 100, ITERATIONS = true, runtime = 0) {
+    let time; //make sure all vars are declared in the needed scope -> {}
     if (checkEvolution(ITERATIONS, runtime)) {
         obj.renderStep(); //rendering is done from form with params (grid)
         runtime++;
