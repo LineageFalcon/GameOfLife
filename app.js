@@ -13,3 +13,5 @@ function play(grid, form, evolution = true) {
         clearTimeout(time);
     }
 }
+
+//if finished loading page run this and that !

@@ -173,7 +173,7 @@ function play(obj, ANIMATION_SPEED = 100, ITERATIONS = true, runtime = 0) {
     if (checkEvolution(ITERATIONS, runtime)) {
         obj.renderStep(); //rendering is done from form with params (grid)
         runtime++;
-        time = setTimeout(play, ANIMATION_SPEED, obj, ANIMATION_SPEED, ITERATIONS, runtime);
+        time = setTimeout(play, ANIMATION_SPEED, obj, ANIMATION_SPEED, ITERATIONS, runtime); //maybe use requestAnimationFrame
     } else {
         clearTimeout(time);
     }
@@ -185,5 +185,17 @@ function checkEvolution(ITERATIONS, runtime) {
     }
     else {
         return false;
+    }
+}
+
+class guiRender {
+    constructor() {
+
+    }
+}
+
+class integrationFunction {
+    constructor() {
+
     }
 }
