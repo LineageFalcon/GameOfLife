@@ -1,14 +1,57 @@
 /* document.addEventListener("DOMContentLoaded", function(event) {
-    let formBinding = new formHandler();
+    let formBinding = new guiRender();
     let runtime = new integrationFunction(d);
 }); 
 //shall work as a dom ready function to call all other stuff when needed
 
 */
+class controller {
+    constructor() {		
+		this.areaSize = height * width;//used in for-loops
+    }
+
+    renderStep() { //integration class or stays in logic
+        let divArray = this.getDivs();
+        let gridArray = this.createArray(this.height, this.width);
+        gridArray = this.mapDivs(divArray, gridArray);
+
+        let onlyChangesArray = [];
+        for(let i = 0; i < this.height; i++) 
+        {
+            for(let k = 0; k < this.width; k++)
+            {
+                let count = this.calcNeighbours(i, k, gridArray);
+                if(undefined !== this.applyRules(i, k, count, gridArray[i][k]))// not efficient
+                    onlyChangesArray.push(this.applyRules(i, k, count, gridArray[i][k]));
+            }
+        }
+        //method for logic to get new array for the new grid --> maybe this can replace the acutal if closure
+        this.setDivs(onlyChangesArray, divArray);
+    }
+
+    checkEvolution(ITERATIONS, runtime) {
+        if (runtime < ITERATIONS || ITERATIONS == -1) {
+            return true
+        }
+        else {
+            return false;
+        }
+    }
+
+    play(obj, ANIMATION_SPEED = 100, ITERATIONS = true, runtime = 0) {
+        let time; //make sure all vars are declared in the needed scope -> {}
+        if (checkEvolution(ITERATIONS, runtime)) {
+            obj.renderStep(); //rendering is done from form with params (grid)
+            runtime++;
+            time = setTimeout(play, ANIMATION_SPEED, obj, ANIMATION_SPEED, ITERATIONS, runtime); //maybe use requestAnimationFrame
+        } else {
+            clearTimeout(time);
+        }
+    }
+}
 
 class logicRender {
-    constructor(formHandler, guiRender) {
-        this.form = formHandler;
+    constructor(guiRender) {
         this.gui = guiRender;
     }
 
@@ -99,33 +142,24 @@ class logicRender {
     }
 }
 
-class formHandler {
-    constructor() {
-    this.height = document.getElementById('height').value;// could be getters from a binded class obj
-    this.width = document.getElementById('width').value;
-    this.iterations = document.getElementById('iterations').value;
-    this.animationSpeed = getOptionsValue('evoSpeed');
-    }
-
-    getOptionsValue(htmlElement) {
-        let value;
-        const ELEM = document.getElementById(htmlElement);
-        for (let i = 0; i < ELEM.options.length; i++ ) {
-            value = ELEM.options[i];
-            if ( value.selected === true ) {
-                break;
-            }
-        }
-        return value.text;
-    }
-
-}
-
 class guiRender {
     constructor() {
+        this.height = document.getElementById('height').value;// could be getters from a binded class obj
+        this.width = document.getElementById('width').value;
+        this.iterations = document.getElementById('iterations').value;
+        this.animationSpeed = getOptionsValue('evoSpeed');
         this.wrapper = document.createElement('section');
 
-		this.createGrid();
+        this.createGrid();
+        
+        document.getElementById('start').addEventListener('click', this.setValues());
+    }
+
+    setValues() {
+        this.height = document.getElementById('height').value;// could be getters from a binded class obj
+        this.width = document.getElementById('width').value;
+        this.iterations = document.getElementById('iterations').value;
+        this.animationSpeed = getOptionsValue('evoSpeed');
     }
 
     createGrid() { //DOM access --> DOM class
@@ -134,17 +168,29 @@ class guiRender {
         this.wrapper.setAttribute('class', 'grid');
         this.wrapper.style.gridTemplateColumns = 'repeat(' + this.width+ ', auto)';
         this.wrapper.style.gridTemplateRows = 'repeat(' + this.height + ', auto)';
-        for(let i = 0; i < this.areaSize; i++){
-            let div = document.createElement('div');
-            let ran = Math.round(Math.random());
-            if (ran == 1) {
-                this.wrapper.appendChild(div).setAttribute('class', 'alive');
-            }
-            else {
-                this.wrapper.appendChild(div).setAttribute('class', 'dead');
+            for(let i = 0; i < this.areaSize; i++) {
+                let div = document.createElement('div');
+                let ran = Math.round(Math.random());
+                if (ran == 1) {
+                    this.wrapper.appendChild(div).setAttribute('class', 'alive');
+                }
+                else {
+                    this.wrapper.appendChild(div).setAttribute('class', 'dead');
+                }
             }
         }
-    }
+
+        getOptionsValue(htmlElement) {
+            let value;
+            const ELEM = document.getElementById(htmlElement);
+            for (let i = 0; i < ELEM.options.length; i++ ) {
+                value = ELEM.options[i];
+                if ( value.selected === true ) {
+                    break;
+                }
+            }
+            return value.text;
+        }
 
     applyChanges(elem, divArray) { //DOM access --> DOM class
         if(elem.gridArrayCell == 1) {
@@ -152,56 +198,6 @@ class guiRender {
         } 
         else {
             divArray[elem.index].setAttribute('class', 'dead');
-        }
-}
-}
-
-class integrationFunction {
-    constructor(height = 3, width = 3) {
-		this.height = height;
-		this.width = width;
-		
-		this.areaSize = height * width;//used in for-loops
-        this.wrapper = document.createElement('section');
-    }
-
-    renderStep() { //integration class or stays in logic
-        let divArray = this.getDivs();
-        let gridArray = this.createArray(this.height, this.width);
-        gridArray = this.mapDivs(divArray, gridArray);
-
-        let onlyChangesArray = [];
-        for(let i = 0; i < this.height; i++) 
-        {
-            for(let k = 0; k < this.width; k++)
-            {
-                let count = this.calcNeighbours(i, k, gridArray);
-                if(undefined !== this.applyRules(i, k, count, gridArray[i][k]))// not efficient
-                    onlyChangesArray.push(this.applyRules(i, k, count, gridArray[i][k]));
-            }
-        }
-        //method for logic to get new array for the new grid --> maybe this can replace the acutal if closure
-
-        this.setDivs(onlyChangesArray, divArray);
-    }
-
-    checkEvolution(ITERATIONS, runtime) {
-        if (runtime < ITERATIONS || ITERATIONS == -1) {
-            return true
-        }
-        else {
-            return false;
-        }
-    }
-
-    play(obj, ANIMATION_SPEED = 100, ITERATIONS = true, runtime = 0) {
-        let time; //make sure all vars are declared in the needed scope -> {}
-        if (checkEvolution(ITERATIONS, runtime)) {
-            obj.renderStep(); //rendering is done from form with params (grid)
-            runtime++;
-            time = setTimeout(play, ANIMATION_SPEED, obj, ANIMATION_SPEED, ITERATIONS, runtime); //maybe use requestAnimationFrame
-        } else {
-            clearTimeout(time);
         }
     }
 }
