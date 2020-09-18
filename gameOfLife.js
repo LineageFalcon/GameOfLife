@@ -10,7 +10,7 @@ class controller {
 		this.areaSize = height * width;//used in for-loops
     }
 
-    renderStep() { //integration class or stays in logic
+    static renderStep() { //integration class or stays in logic
         let divArray = this.getDivs();
         let gridArray = this.createArray(this.height, this.width);
         gridArray = this.mapDivs(divArray, gridArray);
@@ -29,7 +29,7 @@ class controller {
         this.setDivs(onlyChangesArray, divArray);
     }
 
-    checkEvolution(ITERATIONS, runtime) {
+    static checkEvolution(ITERATIONS, runtime) {
         if (runtime < ITERATIONS || ITERATIONS == -1) {
             return true
         }
@@ -38,12 +38,12 @@ class controller {
         }
     }
 
-    play(obj, ANIMATION_SPEED = 100, ITERATIONS = true, runtime = 0) {
+    static play(obj, ANIMATION_SPEED = 100, ITERATIONS = true, runtime = 0) {
         let time; //make sure all vars are declared in the needed scope -> {}
         if (checkEvolution(ITERATIONS, runtime)) {
             obj.renderStep(); //rendering is done from form with params (grid)
             runtime++;
-            time = setTimeout(play, ANIMATION_SPEED, obj, ANIMATION_SPEED, ITERATIONS, runtime); //maybe use requestAnimationFrame
+            time = setTimeout(controller.play, ANIMATION_SPEED, obj, ANIMATION_SPEED, ITERATIONS, runtime); //maybe use requestAnimationFrame
         } else {
             clearTimeout(time);
         }
@@ -152,7 +152,10 @@ class guiRender {
 
         this.createGrid();
         
-        document.getElementById('start').addEventListener('click', this.setValues());
+        document.getElementById('start').addEventListener('click', function() {
+                this.setValues();
+                controller.play();
+            });
     }
 
     setValues() {
