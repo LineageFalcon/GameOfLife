@@ -187,26 +187,3 @@ function checkEvolution(ITERATIONS, runtime) {
         return false;
     }
 }
-
-/* document.addEventListener("DOMContentLoaded", function(event) { 
-  //do work
-}); 
-//shall work as a dom ready function to call all other stuff when needed
-
-*/
-
-class guiRender {
-    constructor() {
-		this.createGrid();
-    }
-}
-
-class integrationFunction {
-    constructor(height = 3, width = 3) {
-		this.height = height;
-		this.width = width;
-		
-		this.areaSize = height * width;//used in for-loops
-        this.wrapper = document.createElement('section');
-    }
-}
