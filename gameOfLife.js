@@ -1,18 +1,30 @@
-/* document.addEventListener("DOMContentLoaded", function(event) {
+document.addEventListener("DOMContentLoaded", function(event) {
     let newInstance = new guiRender();
 
     controller.setInstance(newInstance);
 }); 
 //shall work as a dom ready function to call all other stuff when needed
 
-*/
 class controller {
     constructor() {
         this._instances = [];
     }
 
-    static setInstance(newInstance){
-        return this._instances = newInstance;
+    static setInstance(newInstance) {
+        this._instances = newInstance;
+    }
+
+    static getInstance() {
+        return this._instances;
+    }
+
+    static eventCaller() {
+        document.getElementById('start').addEventListener('click', function() {
+            const CURRENT_INSTANCE = controller.getInstance()
+            CURRENT_INSTANCE.setValues();
+            logicRender.setInstance(CURRENT_INSTANCE);
+            controller.play(CURRENT_INSTANCE.animationSpeed, CURRENT_INSTANCE.iterations);
+        });
     }
 
     static checkEvolution(ITERATIONS, runtime) {
@@ -37,7 +49,17 @@ class controller {
 }
 
 class logicRender {
-    constructor() {}
+    constructor() {
+        this._instance = null;
+    }
+
+    static setInstance(newInstance) {
+       this._instance = newInstance;
+    }
+
+    static getInstance() {
+        return this._instance;
+    }
 
     static renderStep() { //integration class or stays in logic
         let divArray = this.getDivs();
@@ -111,7 +133,7 @@ class logicRender {
         return count;
     }
 
-    mapDivs(divArray, gridArray) { //logic --> instanceOfLife class or DOM access --> DOM class
+    static mapDivs(divArray, gridArray) { //logic --> instanceOfLife class or DOM access --> DOM class
         let index = 0;
         for(let i = 0; i < this.height; i++) {
             for(let k = 0; k < this.width; k++) {
@@ -154,13 +176,7 @@ class guiRender {
         this.wrapper = document.createElement('section');
 
         this.createGrid();
-        
-        document.getElementById('start').addEventListener('click', function() {
-                this.setValues();
-                controller.play();
-            });
-
-        
+        controller.eventCaller();
     }
 
     setValues() {
@@ -171,8 +187,8 @@ class guiRender {
     }
 
     createGrid() { //DOM access --> DOM class
-        let body = document.getElementsByTagName('body')[0];
-        body.appendChild(this.wrapper);
+        let container = document.getElementById('container');
+        container.appendChild(this.wrapper);
         this.wrapper.setAttribute('class', 'grid');
         this.wrapper.style.gridTemplateColumns = 'repeat(' + this.width+ ', auto)';
         this.wrapper.style.gridTemplateRows = 'repeat(' + this.height + ', auto)';
