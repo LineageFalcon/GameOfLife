@@ -1,14 +1,43 @@
 /* document.addEventListener("DOMContentLoaded", function(event) {
-    let formBinding = new guiRender();
-    let runtime = new integrationFunction(d);
+    let newInstance = new guiRender();
+
+    controller.setInstance(newInstance);
 }); 
 //shall work as a dom ready function to call all other stuff when needed
 
 */
 class controller {
-    constructor() {		
-		this.areaSize = height * width;//used in for-loops
+    constructor() {
+        this._instances = [];
     }
+
+    static setInstance(newInstance){
+        return this._instances = newInstance;
+    }
+
+    static checkEvolution(ITERATIONS, runtime) {
+        if (runtime < ITERATIONS || ITERATIONS == -1) {
+            return true
+        }
+        else {
+            return false;
+        }
+    }
+
+    static play(ANIMATION_SPEED = 100, ITERATIONS = true, runtime = 0) {
+        let time; //make sure all vars are declared in the needed scope -> {}
+        if (checkEvolution(ITERATIONS, runtime)) {
+            logicRender.renderStep(); //rendering is done from form with params (grid)
+            runtime++;
+            time = setTimeout(controller.play, ANIMATION_SPEED, ANIMATION_SPEED, ITERATIONS, runtime); //maybe use requestAnimationFrame
+        } else {
+            clearTimeout(time);
+        }
+    }
+}
+
+class logicRender {
+    constructor() {}
 
     static renderStep() { //integration class or stays in logic
         let divArray = this.getDivs();
@@ -26,40 +55,14 @@ class controller {
             }
         }
         //method for logic to get new array for the new grid --> maybe this can replace the acutal if closure
-        this.setDivs(onlyChangesArray, divArray);
+        logicRender.setDivs(onlyChangesArray, divArray);
     }
 
-    static checkEvolution(ITERATIONS, runtime) {
-        if (runtime < ITERATIONS || ITERATIONS == -1) {
-            return true
-        }
-        else {
-            return false;
-        }
-    }
-
-    static play(obj, ANIMATION_SPEED = 100, ITERATIONS = true, runtime = 0) {
-        let time; //make sure all vars are declared in the needed scope -> {}
-        if (checkEvolution(ITERATIONS, runtime)) {
-            obj.renderStep(); //rendering is done from form with params (grid)
-            runtime++;
-            time = setTimeout(controller.play, ANIMATION_SPEED, obj, ANIMATION_SPEED, ITERATIONS, runtime); //maybe use requestAnimationFrame
-        } else {
-            clearTimeout(time);
-        }
-    }
-}
-
-class logicRender {
-    constructor(guiRender) {
-        this.gui = guiRender;
-    }
-
-    setDivs(onlyChangesArray, divArray) { //logic --> instanceOfLife class
+    static setDivs(onlyChangesArray, divArray) { //logic --> instanceOfLife class
         onlyChangesArray.forEach(elem => this.applyChanges(elem, divArray));
     }
 
-    copyGrid() { //logic --> instanceOfLife class
+    static copyGrid() { //logic --> instanceOfLife class
         for(let i = 0; i < this.height; i++) {
             for(let k = 0; k < this.width; k++) {
                 this.gridArray[i][k] = this.renderGridArray[i][k];
@@ -68,7 +71,7 @@ class logicRender {
         return this;
     }
 
-    applyRules(i, k, count, gridArrayCell) { //logic --> instanceOfLife class
+    static applyRules(i, k, count, gridArrayCell) { //logic --> instanceOfLife class
 
         //DO MATH
         let uiIndex = ((this.width)*i)+k;
@@ -79,7 +82,7 @@ class logicRender {
             return {gridArrayCell: 1, index: uiIndex};  
     }
 
-    calcNeighbours(i, k, gridArray) { //logic --> instanceOfLife class
+    static calcNeighbours(i, k, gridArray) { //logic --> instanceOfLife class
         let count = 0;
         if(i - 1 >= 0) {
             if(gridArray[i - 1][k] == 1) {count++;}
@@ -123,7 +126,7 @@ class logicRender {
         return gridArray;
     }
 
-    createArray(height, width) { //logic --> instanceOfLife class
+    static createArray(height, width) { //logic --> instanceOfLife class
         let gridArray = [];
         for(let i = 0; i < height; i++) {
             for(let k = 0; k < width; k++) {
@@ -133,7 +136,7 @@ class logicRender {
         return gridArray;
     }
 
-    getDivs() { //logic --> instanceOfLife class or DOM access --> DOM class
+    static getDivs() { //logic --> instanceOfLife class or DOM access --> DOM class
         let uIDivs = [];
         for(let i = 0; i < (this.areaSize); i++) {
             uIDivs[i] = this.wrapper.getElementsByTagName('div')[i];
@@ -156,6 +159,8 @@ class guiRender {
                 this.setValues();
                 controller.play();
             });
+
+        
     }
 
     setValues() {
