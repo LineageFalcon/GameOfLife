@@ -29,8 +29,8 @@ class instanceOfGrid {
     }
 
     createGrid() { //DOM access --> DOM class
-        let body = document.getElementsByTagName('body')[0];
-        body.appendChild(this.wrapper);
+        let container = document.getElementById('container');
+        container.appendChild(this.wrapper);
         this.wrapper.setAttribute('class', 'grid');
         this.wrapper.style.gridTemplateColumns = 'repeat(' + this.width+ ', auto)';
         this.wrapper.style.gridTemplateRows = 'repeat(' + this.height + ', auto)';
