@@ -1,30 +1,42 @@
 document.addEventListener("DOMContentLoaded", function(event) {
-    let newInstance = new guiRender();
+    let modelInstance = new logicRender();
+    let viewInstance = new guiRender(modelInstance);
+    let controllerInstance = new controller();
 
-    controller.setInstance(newInstance);
+
+    controller.setView(viewInstance);
+    controller.setModel(modelInstance);
 }); 
 //shall work as a dom ready function to call all other stuff when needed
 
 class controller {
-    constructor() {
-        this._instances = [];
+    constructor(model, view) {
+        //this._instances = [];
+        this._modelInstance;
+        this._viewInstance;
+
+        document.getElementById('start').addEventListener('click', function() {
+            //const CURRENT_INSTANCE = controller.viewInstance;
+            //viewInstance.setValues();
+            //logicRender.setInstance(CURRENT_INSTANCE);
+            controller.play(controller._viewInstance.animationSpeed, controller._viewInstance.iterations);
+        });
     }
 
     static setInstance(newInstance) {
         this._instances = newInstance;
     }
 
-    static getInstance() {
-        return this._instances;
+    static setView(view) {
+        this._viewInstance = view;
     }
 
-    static eventCaller() {
-        document.getElementById('start').addEventListener('click', function() {
-            const CURRENT_INSTANCE = controller.getInstance()
-            CURRENT_INSTANCE.setValues();
-            logicRender.setInstance(CURRENT_INSTANCE);
-            controller.play(CURRENT_INSTANCE.animationSpeed, CURRENT_INSTANCE.iterations);
-        });
+    static setModel(model) {
+        this._modelInstance = model;
+    }
+
+    static getInstance() {
+        return this._instances;
     }
 
     static checkEvolution(ITERATIONS, runtime) {
@@ -49,31 +61,21 @@ class controller {
 }
 
 class logicRender {
-    constructor() {
-        this._instance = null;
-    }
-
-    static setInstance(newInstance) {
-       this._instance = newInstance;
-    }
-
-    static getInstance() {
-        return this._instance;
-    }
+    constructor() {}
 
     static renderStep() { //integration class or stays in logic
-        let divArray = this.getDivs();
-        let gridArray = this.createArray(this.height, this.width);
-        gridArray = this.mapDivs(divArray, gridArray);
+        let divArray = logicRender.getDivs();
+        let gridArray = logicRender.createArray(controller._viewInstance.height, controller._viewInstance.width);
+        gridArray = logicRender.mapDivs(divArray, gridArray);
 
         let onlyChangesArray = [];
-        for(let i = 0; i < this.height; i++) 
+        for(let i = 0; i < controller._viewInstance.height; i++) 
         {
-            for(let k = 0; k < this.width; k++)
+            for(let k = 0; k < controller._viewInstance.width; k++)
             {
-                let count = this.calcNeighbours(i, k, gridArray);
-                if(undefined !== this.applyRules(i, k, count, gridArray[i][k]))// not efficient
-                    onlyChangesArray.push(this.applyRules(i, k, count, gridArray[i][k]));
+                let count = logicRender.calcNeighbours(i, k, gridArray);
+                if(undefined !== logicRender.applyRules(i, k, count, gridArray[i][k]))// not efficient
+                    onlyChangesArray.push(logicRender.applyRules(i, k, count, gridArray[i][k]));
             }
         }
         //method for logic to get new array for the new grid --> maybe this can replace the acutal if closure
@@ -81,13 +83,13 @@ class logicRender {
     }
 
     static setDivs(onlyChangesArray, divArray) { //logic --> instanceOfLife class
-        onlyChangesArray.forEach(elem => this.applyChanges(elem, divArray));
+        onlyChangesArray.forEach(elem => logicRender.applyChanges(elem, divArray));
     }
 
     static copyGrid() { //logic --> instanceOfLife class
-        for(let i = 0; i < this.height; i++) {
-            for(let k = 0; k < this.width; k++) {
-                this.gridArray[i][k] = this.renderGridArray[i][k];
+        for(let i = 0; i < this._instance.height; i++) {
+            for(let k = 0; k < this._instance.width; k++) {
+                logicRender.gridArray[i][k] = logicRender.renderGridArray[i][k];
             }
         }
         return this;
@@ -96,7 +98,7 @@ class logicRender {
     static applyRules(i, k, count, gridArrayCell) { //logic --> instanceOfLife class
 
         //DO MATH
-        let uiIndex = ((this.width)*i)+k;
+        let uiIndex = ((this._instance.width)*i)+k;
 
         if(count < 2 || count > 3 && gridArrayCell == 1) 
             return {gridArrayCell: 0, index: uiIndex};
@@ -109,25 +111,25 @@ class logicRender {
         if(i - 1 >= 0) {
             if(gridArray[i - 1][k] == 1) {count++;}
         }
-        if(i + 1 < this.height) {
+        if(i + 1 < this._instance.height) {
             if(gridArray[i + 1][k] == 1) {count++;}
         }
         if(k - 1 >= 0) {
             if(gridArray[i][k - 1] == 1) {count++;}
         }
-        if(k + 1 < this.width) {
+        if(k + 1 < this._instance.width) {
             if(gridArray[i][k + 1] == 1) {count++;}
         }
         if(i - 1 >= 0 && k - 1 >= 0) {
             if(gridArray[i - 1][k - 1]) {count++;}
         }
-        if(i - 1 >= 0 && k + 1 < this.width) {
+        if(i - 1 >= 0 && k + 1 < this._instance.width) {
             if(gridArray[i - 1][k + 1]) {count++;}
         }
-        if(i + 1 < this.height && k + 1 < this.width) {
+        if(i + 1 < this._instance.height && k + 1 < this._instance.width) {
             if(gridArray[i + 1][k + 1]) {count++;}
         }
-        if(i + 1 < this.height && k - 1 >= 0) {
+        if(i + 1 < this._instance.height && k - 1 >= 0) {
             if(gridArray[i + 1][k - 1]) {count++;}
         }
         return count;
@@ -135,8 +137,8 @@ class logicRender {
 
     static mapDivs(divArray, gridArray) { //logic --> instanceOfLife class or DOM access --> DOM class
         let index = 0;
-        for(let i = 0; i < this.height; i++) {
-            for(let k = 0; k < this.width; k++) {
+        for(let i = 0; i < controller._viewInstance.height; i++) {
+            for(let k = 0; k < controller._viewInstance.width; k++) {
                 if(divArray[index].getAttribute('class') == 'alive'){
                     gridArray[i][k] = 1;
                 } else {
@@ -160,23 +162,24 @@ class logicRender {
 
     static getDivs() { //logic --> instanceOfLife class or DOM access --> DOM class
         let uIDivs = [];
-        for(let i = 0; i < (this.areaSize); i++) {
-            uIDivs[i] = this.wrapper.getElementsByTagName('div')[i];
+        for(let i = 0; i < (controller._viewInstance.height * controller._viewInstance.width); i++) {
+            uIDivs[i] = controller._viewInstance.wrapper.getElementsByTagName('div')[i];
         }
         return uIDivs;
     }
 }
 
 class guiRender {
-    constructor() {
+    constructor(model) {
         this.height = document.getElementById('height').value;// could be getters from a binded class obj
         this.width = document.getElementById('width').value;
         this.iterations = document.getElementById('iterations').value;
         this.animationSpeed = getOptionsValue('evoSpeed');
         this.wrapper = document.createElement('section');
 
+        this.modelInstance = model
+
         this.createGrid();
-        controller.eventCaller();
     }
 
     setValues() {
