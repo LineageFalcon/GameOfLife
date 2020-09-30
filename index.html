@@ -23,17 +23,20 @@
             <div id="form">
                 <div>
                     <label for="height">Height</label>
-                    <input type="number" name="height" id="height" value="33">
+                    <input class="slider" type="range" name="height" id="height" value="33" min="0" max="200">
+                    <output name="height" for="height">33</output>
                 </div>
                 
                 <div>
                     <label for="width">Width</label>
-                    <input type="number" name="width" id="width" value="44">
+                    <input class="slider" type="range" name="width" id="width" value="44" min="0" max="200">
+                    <output name="width" for="width">44</output>
                 </div>
 
                 <div>
                     <label for="iterations">Iterations</label>
-                    <input type="number" name="iterations" id="iterations" value="-1">
+                    <input class="slider" type="range" name="iterations" id="iterations" value="-1" min="-1" max="1000">
+                    <output name="iterations" for="iterations">-1</output>
                 </div>
 
                 <div>

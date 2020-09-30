@@ -21,6 +21,6 @@ In the best case you use this emojis to declare the topic of your commit.</br>
 - [X] merge cleanCodeConcept into master
 - [ ] refine code
 - [X] creating a form for userinput
-- [ ] change number input to range for better UX
+- [x] change number input to range for better UX
 - [ ] style the userinput
 - [ ] make it possible to change the cell via cursor and drawing in them before and while the evolution is stopt
