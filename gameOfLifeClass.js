@@ -152,7 +152,18 @@ document.getElementById('start').addEventListener('click', function() {
     const ANIMATION_SPEED = getOptionsValue('evoSpeed');
     let grid = new instanceOfGrid(HEIGHT, WIDTH); 
     play(grid, ANIMATION_SPEED, ITERATIONS);
-});
+}); 
+
+let ary = Array.prototype.slice.call(document.querySelectorAll(".slider"));
+//const slider = document.querySelectorAll(".slider");
+ary.forEach(function(el) {
+    // Callbacks are passed a reference to the event object that triggered the handler
+    el.addEventListener('input', function(evt) {
+        // The this keyword will refer to the element that was clicked
+        let output = document.querySelector('output[name="'+ this.name + '"]');
+        output.value = this.value;
+    });
+})
 
 function getOptionsValue(htmlElement) {
     let value;
@@ -164,7 +175,7 @@ function getOptionsValue(htmlElement) {
         }
     }
     return value.text;
-}
+}   
 
 // play(grid); //regular function call -> not yet needed and revised
 
