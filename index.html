@@ -19,21 +19,24 @@
         <!-- <script src="./logic.js"></script> -->
     </head>
     <body>
-        <section>
+        <section id="formContainer">
             <div id="form">
                 <div>
                     <label for="height">Height</label>
-                    <input type="number" name="height" id="height" value="50">
+                    <input class="slider" type="range" name="height" id="height" value="33" min="0" max="200">
+                    <output name="height" for="height">33</output>
                 </div>
                 
                 <div>
                     <label for="width">Width</label>
-                    <input type="number" name="width" id="width" value="50">
+                    <input class="slider" type="range" name="width" id="width" value="44" min="0" max="200">
+                    <output name="width" for="width">44</output>
                 </div>
 
                 <div>
                     <label for="iterations">Iterations</label>
-                    <input type="number" name="iterations" id="iterations" value="0">
+                    <input class="slider" type="range" name="iterations" id="iterations" value="-1" min="-1" max="1000">
+                    <output name="iterations" for="iterations">-1</output>
                 </div>
 
                 <div>
@@ -47,20 +50,19 @@
                 
                 <div>
                     <label for="randomOn">Random ON</label>
-                    <input type="checkbox" name="randomOn" id="randomOn">
+                    <input type="checkbox" name="randomOn" id="randomOn" checked>
                 </div>
                 
                 <button id="start">Start</button>
-                <button>Pause</button>
-                <button>Step</button>
-
-                <!-- it needs three (sizex2 and one for the count iterations) numSelectBoxes with tooltip and placeholder, maybe a selectBox for the speed of evolution
-                and a button to start, stop and move it forward one step and maybe later a button for replay and or a step back
-                used with a array containing the arrays in the class itself. 
-                Furthermore it needs a tickbox for selecting random layout or and a selectBox for choosing precreated layouts like a template-->
+                <button id="pause">Pause</button>
+                <button id="step">Step</button>
             </div>
         </section>
+        <section id="container">
+
+        </section>
     </body>
-    <!-- <script src="./app.js"></script> -->
-    <script src="./gameOfLifeClass.js" ></script>
+    <script src="./app.js"></script>
+    <script src="./gameOfLife.js"></script>
+    <!-- <script src="./gameOfLifeClass.js"></script> -->
 </html>

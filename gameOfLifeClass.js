@@ -3,25 +3,37 @@ class instanceOfGrid {
         this.height = height;// going to be a user input
         this.width = width;// going to be a user input
         this.areaSize = height * width;//used in for-loops
-        this.divElements = [];//holds the div obj from the DOM
         this.wrapper = document.createElement('section');
-        this.gridArray = [];//will be fused to a twodimensional array
-        this.renderGridArray = [];//same here
         
-        this.createGrid().getDivs().createArray();// prepare methods
+        this.createGrid();
     }
 
-    renderStep() {
-        this.renderGridArray = JSON.parse(JSON.stringify(this.gridArray));;
-        this.mapDivs().calcNeighbours().copyGrid().setDivs();
+    renderStep() { //integration class or stays in logic
+        let divArray = this.getDivs();
+        let gridArray = this.createArray(this.height, this.width);
+        gridArray = this.mapDivs(divArray, gridArray);
+
+        let onlyChangesArray = [];
+        for(let i = 0; i < this.height; i++) 
+        {
+            for(let k = 0; k < this.width; k++)
+            {
+                let count = this.calcNeighbours(i, k, gridArray);
+                if(undefined !== this.applyRules(i, k, count, gridArray[i][k]))// not efficient
+                    onlyChangesArray.push(this.applyRules(i, k, count, gridArray[i][k]));
+            }
+        }
+        //method for logic to get new array for the new grid --> maybe this can replace the acutal if closure
+
+        this.setDivs(onlyChangesArray, divArray);
     }
 
-    createGrid() { //wrapper needs to be looked into, if it is realy necessary to be in global scope !! Getter ?
-        let body = document.getElementsByTagName('body')[0];
-        body.appendChild(this.wrapper);
+    createGrid() { //DOM access --> DOM class
+        let container = document.getElementById('container');
+        container.appendChild(this.wrapper);
         this.wrapper.setAttribute('class', 'grid');
-        this.wrapper.style.gridTemplateColumns = 'repeat(' + this.height + ', auto)';
-        this.wrapper.style.gridTemplateRows = 'repeat(' + this.width + ', auto)';
+        this.wrapper.style.gridTemplateColumns = 'repeat(' + this.width+ ', auto)';
+        this.wrapper.style.gridTemplateRows = 'repeat(' + this.height + ', auto)';
         for(let i = 0; i < this.areaSize; i++){
             let div = document.createElement('div');
             let ran = Math.round(Math.random());
@@ -32,94 +44,83 @@ class instanceOfGrid {
                 this.wrapper.appendChild(div).setAttribute('class', 'dead');
             }
         }
-        return this;
     }
 
-    getDivs() {
+    getDivs() { //logic --> instanceOfLife class or DOM access --> DOM class
+        let uIDivs = [];
         for(let i = 0; i < (this.areaSize); i++) {
-            this.divElements[i] = this.wrapper.getElementsByTagName('div')[i];
+            uIDivs[i] = this.wrapper.getElementsByTagName('div')[i];
         }
-        return this;
+        return uIDivs;
     }
 
-    createArray() {
-        for(let i = 0; i < this.height; i++) {
-            for(let k = 0; k < this.width; k++) {
-                this.gridArray[i] = [];
+    createArray(height, width) { //logic --> instanceOfLife class
+        let gridArray = [];
+        for(let i = 0; i < height; i++) {
+            for(let k = 0; k < width; k++) {
+                gridArray[i] = [];
             }
         }
-        this.renderGridArray = this.gridArray;
-
-        return this;
+        return gridArray;
     }
 
     //get the value of divs and push it into the Grid-Array in 0 and 1 as dead and alive
-    mapDivs() {
+    mapDivs(divArray, gridArray) { //logic --> instanceOfLife class or DOM access --> DOM class
         let index = 0;
         for(let i = 0; i < this.height; i++) {
             for(let k = 0; k < this.width; k++) {
-                if(this.divElements[index].getAttribute('class') == 'alive'){
-                    this.gridArray[i][k] = 1;
+                if(divArray[index].getAttribute('class') == 'alive'){
+                    gridArray[i][k] = 1;
                 } else {
-                    this.gridArray[i][k] = 0;
+                    gridArray[i][k] = 0;
                 }
                 index++;
             }
         }
-        return this;
+        return gridArray;
     }
 
-    calcNeighbours() {
-        for(let i = 0; i < this.height; i++) {
-            for(let k = 0; k < this.width; k++){
-                let count = 0;
-                if(i - 1 >= 0) {
-                    if(this.gridArray[i - 1][k] == 1) {count++;}
-                }
-                if(i + 1 < this.height) {
-                    if(this.gridArray[i + 1][k] == 1) {count++;}
-                }
-                if(k - 1 >= 0) {
-                    if(this.gridArray[i][k - 1] == 1) {count++;}
-                }
-                if(k + 1 < this.width) {
-                    if(this.gridArray[i][k + 1] == 1) {count++;}
-                }
-                if(i - 1 >= 0 && k - 1 >= 0) {
-                    if(this.gridArray[i - 1][k - 1]) {count++;}
-                }
-                if(i - 1 >= 0 && k + 1 < this.width) {
-                    if(this.gridArray[i - 1][k + 1]) {count++;}
-                }
-                if(i + 1 < this.height && k + 1 < this.width) {
-                    if(this.gridArray[i + 1][k + 1]) {count++;}
-                }
-                if(i + 1 < this.height && k - 1 >= 0) {
-                    if(this.gridArray[i + 1][k - 1]) {count++;}
-                }
-                this.applyRules(i, k, count);
-            }
+    calcNeighbours(i, k, gridArray) { //logic --> instanceOfLife class
+        let count = 0;
+        if(i - 1 >= 0) {
+            if(gridArray[i - 1][k] == 1) {count++;}
         }
-        return this;
-    }
-
-    applyRules(i, k, count) {
-        switch(this.gridArray[i][k]) {
-            case 1: switch(count) {
-                case 2: this.renderGridArray[i][k] = 1;
-                break;
-                case 3: this.renderGridArray[i][k] = 1;
-                break;
-                default: this.renderGridArray[i][k] = 0;
-                break;
-                }
-            break;
-            case 0: if(count == 3) {this.renderGridArray[i][k] = 1;} else {this.renderGridArray[i][k] = 0;}
-            break;
+        if(i + 1 < this.height) {
+            if(gridArray[i + 1][k] == 1) {count++;}
         }
+        if(k - 1 >= 0) {
+            if(gridArray[i][k - 1] == 1) {count++;}
+        }
+        if(k + 1 < this.width) {
+            if(gridArray[i][k + 1] == 1) {count++;}
+        }
+        if(i - 1 >= 0 && k - 1 >= 0) {
+            if(gridArray[i - 1][k - 1]) {count++;}
+        }
+        if(i - 1 >= 0 && k + 1 < this.width) {
+            if(gridArray[i - 1][k + 1]) {count++;}
+        }
+        if(i + 1 < this.height && k + 1 < this.width) {
+            if(gridArray[i + 1][k + 1]) {count++;}
+        }
+        if(i + 1 < this.height && k - 1 >= 0) {
+            if(gridArray[i + 1][k - 1]) {count++;}
+        }
+        return count;
     }
 
-    copyGrid() {
+    applyRules(i, k, count, gridArrayCell) { //logic --> instanceOfLife class
+
+        //DO MATH
+        let uiIndex = ((this.width)*i)+k;
+
+        if(count < 2 || count > 3 && gridArrayCell == 1) 
+            return {gridArrayCell: 0, index: uiIndex};
+        else if(count == 3 && gridArrayCell == 0) 
+            return {gridArrayCell: 1, index: uiIndex};  
+    }
+
+    copyGrid() { //logic --> instanceOfLife class
         for(let i = 0; i < this.height; i++) {
             for(let k = 0; k < this.width; k++) {
                 this.gridArray[i][k] = this.renderGridArray[i][k];
@@ -127,37 +128,86 @@ class instanceOfGrid {
         }
         return this;
     }
-
-    setDivs() {
-        let index = 0;
-        for(let i = 0; i < this.height; i++) {
-            for(let k = 0; k < this.width; k++) {
-                if(this.gridArray[i][k] == 1) {
-                    this.divElements[index].setAttribute('class', 'alive');
-                } else {
-                    this.divElements[index].setAttribute('class', 'dead');
-                }
-                index++;
+    
+    applyChanges(elem, divArray) { //DOM access --> DOM class
+            if(elem.gridArrayCell == 1) {
+                divArray[elem.index].setAttribute('class', 'alive');
+            } 
+            else {
+                divArray[elem.index].setAttribute('class', 'dead');
             }
-        }
-        return this;
+    }
+
+    setDivs(onlyChangesArray, divArray) { //logic --> instanceOfLife class
+        onlyChangesArray.forEach(elem => this.applyChanges(elem, divArray));
     }
 }
 
+//--- here begins the runtime code --> could be a class too ---
+
 document.getElementById('start').addEventListener('click', function() {
-    let height = document.getElementById('height').value;// could be getters from a binded class obj
-    let width = document.getElementById('width').value;
-    let grid = new instanceOfGrid(height, width); 
-    play(grid);
+    const HEIGHT = document.getElementById('height').value;// could be getters from a binded class obj
+    const WIDTH = document.getElementById('width').value;
+    const ITERATIONS = document.getElementById('iterations').value;
+    const ANIMATION_SPEED = getOptionsValue('evoSpeed');
+    let grid = new instanceOfGrid(HEIGHT, WIDTH); 
+    play(grid, ANIMATION_SPEED, ITERATIONS);
 });
+
+window.addEventListener('resize', setMaxValues);
+window.onload = setMaxValues;
+
+function setMaxValues() {
+    let height = window.innerHeight;
+    let width = window.innerWidth;
+    let sliderHeight = document.getElementById('height');
+    let sliderWidth = document.getElementById('width')// special calc needed
+
+    sliderHeight.setAttribute('max', Math.round(height / 10 - 1));
+    sliderWidth.setAttribute('max', Math.round((width / 10) * 0.50));
+}
+
+let ary = Array.prototype.slice.call(document.querySelectorAll('.slider'));
+//const slider = document.querySelectorAll(".slider");
+ary.forEach(function(el) {
+    // Callbacks are passed a reference to the event object that triggered the handler
+    el.addEventListener('input', function(evt) {
+        // The this keyword will refer to the element that was clicked
+        let output = document.querySelector('output[name="'+ this.name + '"]');
+        output.value = this.value;
+    });
+})
+
+function getOptionsValue(htmlElement) {
+    let value;
+    const ELEM = document.getElementById(htmlElement);
+    for (let i = 0; i < ELEM.options.length; i++ ) {
+        value = ELEM.options[i];
+        if ( value.selected === true ) {
+            break;
+        }
+    }
+    return value.text;
+}   
 
 // play(grid); //regular function call -> not yet needed and revised
 
-function play(obj, evolution = true) {
-    if (evolution) {
-        obj.renderStep(); //redering is done from form with params (grid)
-        time = setTimeout(play, 100, obj,  evolution);
+function play(obj, ANIMATION_SPEED = 100, ITERATIONS = true, runtime = 0) {
+    let time; //make sure all vars are declared in the needed scope -> {}
+    if (checkEvolution(ITERATIONS, runtime)) {
+        obj.renderStep(); //rendering is done from form with params (grid)
+        runtime++;
+        time = setTimeout(play, ANIMATION_SPEED, obj, ANIMATION_SPEED, ITERATIONS, runtime); //maybe use requestAnimationFrame
     } else {
         clearTimeout(time);
+    }
+}
+
+function checkEvolution(ITERATIONS, runtime) {
+    if (runtime < ITERATIONS || ITERATIONS == -1) {
+        return true
+    }
+    else {
+        return false;
     }
 }
