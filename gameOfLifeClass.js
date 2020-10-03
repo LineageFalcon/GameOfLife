@@ -152,9 +152,22 @@ document.getElementById('start').addEventListener('click', function() {
     const ANIMATION_SPEED = getOptionsValue('evoSpeed');
     let grid = new instanceOfGrid(HEIGHT, WIDTH); 
     play(grid, ANIMATION_SPEED, ITERATIONS);
-}); 
+});
 
-let ary = Array.prototype.slice.call(document.querySelectorAll(".slider"));
+window.addEventListener('resize', setMaxValues);
+window.onload = setMaxValues;
+
+function setMaxValues() {
+    let height = window.innerHeight;
+    let width = window.innerWidth;
+    let sliderHeight = document.getElementById('height');
+    let sliderWidth = document.getElementById('width')// special calc needed
+
+    sliderHeight.setAttribute('max', Math.round(height / 10 - 1));
+    sliderWidth.setAttribute('max', Math.round((width / 10) * 0.50));
+}
+
+let ary = Array.prototype.slice.call(document.querySelectorAll('.slider'));
 //const slider = document.querySelectorAll(".slider");
 ary.forEach(function(el) {
     // Callbacks are passed a reference to the event object that triggered the handler
