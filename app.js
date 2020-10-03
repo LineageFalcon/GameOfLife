@@ -1,8 +1,7 @@
-document.addEventListener("DOMContentLoaded", function(event) {
+document.addEventListener("DOMContentLoaded", function() {
     let modelInstance = new logicRender();
-    let viewInstance = new guiRender(modelInstance);
-    let controllerInstance = new controller();
-
+    let viewInstance = new guiRender();
+    new controller();
 
     controller.setView(viewInstance);
     controller.setModel(modelInstance);
