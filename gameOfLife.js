@@ -1,17 +1,13 @@
 class controller {
 	constructor() {
-		//this._instances = [];
-		this._modelInstance;
-		this._viewInstance;
+		this._modelInstance = null;
+		this._viewInstance = null;
+		this._time = null;
 
 		controller.main();
 	}
 
 	//#region Setter
-	static setInstance(newInstance) {
-		this._instances = newInstance;
-	}
-
 	static setView(view) {
 		this._viewInstance = view;
 	}
@@ -19,62 +15,127 @@ class controller {
 	static setModel(model) {
 		this._modelInstance = model;
 	}
+
+	static setTime(timer) {
+		this._time = timer;
+	}
 	//#endregion Setter
 
 	//#region Getter
-	static getInstance() {
-		return this._instances;
-	}
-
 	static getView() {
 		return this._viewInstance;
 	}
-	//#endregion Getter
 
-	static checkEvolution(iterations, runtime) {
-		if (runtime < iterations || iterations == -1) {
-			return true
-		}
-		else {
-			return false;
-		}
+	static getModel() {
+		return this._modelInstance;
 	}
 
+	static getTime() {
+		return this._time;
+	}
+	//#endregion Getter
+
 	static main() {
-		document.getElementById('start').addEventListener('click', function() {
+		let mnBtnArray = Array.prototype.slice.call(document.querySelectorAll('.mnBtn'));
+
+		mnBtnArray.forEach(function(arrayItem) {
+			let btnID = arrayItem.getAttribute('id');
+
+			switch(btnID) {
+				case 'create': 
+					controller.create(arrayItem, mnBtnArray);
+					break;
+				case 'start': 
+					controller.start(arrayItem, mnBtnArray);
+					break;
+				case 'pause':
+					controller.pause(arrayItem, mnBtnArray);
+					break;
+				case 'step':
+					controller.step(arrayItem, mnBtnArray);
+					break;
+			}
+		})
+	}
+
+	static create(arrayItem, mnBtnArray) {
+		arrayItem.addEventListener('click', () => {
 			let view = controller.getView();
 
+			arrayItem.disabled = true;
+			mnBtnArray[1].disabled = false;
+			mnBtnArray[3].disabled = false;
+
 			view.setValues();
-			//logicRender.setInstance(CURRENT_INSTANCE);
 			view.createGrid();
-				logicRender.setView(view); //not nice, in theory the controller should call the right functions with a instance parameter
-			controller.play(view);
 		});
 	}
 
-	static play(objToProcess, runtime = 0) {
-		let time; //make sure all vars are declared in the needed scope -> {}
+	static start(arrayItem, mnBtnArray) {
+		arrayItem.addEventListener('click', () => {
+			let view = controller.getView();
+
+			if(arrayItem.textContent == 'Start') {
+				// view.setValues();
+				controller.play(view, undefined, mnBtnArray);
+				arrayItem.textContent = 'Stop'; //at browser incompatibility use '.innerText' instead
+				// mnBtnArray[2].disabled = false;
+				mnBtnArray[3].disabled = true;
+			} else {
+				let timer = controller.getTime();
+				controller.stop(timer);
+				arrayItem.textContent = 'Start';
+				// mnBtnArray[2].disabled = true;
+				mnBtnArray[3].disabled = false;
+			}
+		});
+	}
+
+	static pause(arrayItem, mnBtnArray) {// maybe not necessary
+		arrayItem.addEventListener('click', () => {
+			});
+	}
+
+	static step(arrayItem, mnBtnArray) {
+		arrayItem.addEventListener('click', () => {
+			let view = controller.getView();
+
+			logicRender.renderStep(view);
+		});
+	}
+
+	static stop(timer) {
+		clearTimeout(timer);
+	}
+
+	static play(objToProcess, runtime = 0, mnBtnArray) {
 		let animationSpeed = objToProcess.getAnimationSpeed();
 		let iterations = objToProcess.getIterations();
 
 		if (controller.checkEvolution(iterations, runtime)) {
-			logicRender.renderStep(objToProcess); //rendering is done from form with params (grid)
-			runtime++;
-			time = setTimeout(controller.play, animationSpeed, objToProcess, runtime); //maybe use requestAnimationFrame
+			clearTimeout(this.time);
+			mnBtnArray[1].textContent = 'Start';
+			mnBtnArray[3].disabled = false;
 		} else {
-			clearTimeout(time);
+			logicRender.renderStep(objToProcess);//must return values which are given to the view 
+			runtime++;
+			controller.setTime(setTimeout(controller.play, animationSpeed, objToProcess, runtime, mnBtnArray))
+			//time = requestAnimationFrame(() => {controller.play(objToProcess, run, runtime)});
+		}
+	}
+
+	static checkEvolution(iterations, runtime) {
+		if (runtime < iterations || iterations == -1) {
+			return false;
+		}
+		else {
+			return true;
 		}
 	}
 }
 
 class logicRender {
-	constructor() {
-		this._viewInstance;
-	}
-
-	static setView(view) {
-		this._viewInstance = view;
-	}
+	constructor() {}
 
 	static renderStep(objToProcess) {
 		let height = objToProcess.getHeight();
@@ -82,42 +143,48 @@ class logicRender {
 		let wrapper = objToProcess.getWrapper();
 
 		let divArray = logicRender.getDivs(height, width, wrapper);
-		let gridArray = logicRender.createArray(height, width);
+		let gridArray = logicRender.createArray(height, width);// shouldnt be here 
+		let renderArray = logicRender.createArray(height, width);// this as well
 		gridArray = logicRender.mapDivs(divArray, gridArray, height, width);
+		// let renderArray = logicRender.copyGrid(height, width, gridArray);
 
 		let onlyChangesArray = [];
 		for(let i = 0; i < height; i++) {
 			for(let k = 0; k < width; k++) {
 				let count = logicRender.calcNeighbours(i, k, gridArray, height, width);
-				if(undefined !== logicRender.applyRules(i, k, count, gridArray[i][k], width))// not efficient
-					onlyChangesArray.push(logicRender.applyRules(i, k, count, gridArray[i][k], width));
+
+				renderArray[i][k] = logicRender.applyRules(count, gridArray[i][k]);
+				if (renderArray[i][k] !== gridArray[i][k]) {
+					let linearIndex = ((width)*i)+k;
+					onlyChangesArray.push({gridArrayCell: renderArray[i][k], index: linearIndex});
+				}
 			}
 		}
 		//method for logic to get new array for the new grid --> maybe this can replace the acutal if closure
-		logicRender.setDivs(onlyChangesArray, divArray, objToProcess);
+		logicRender.setDivs(onlyChangesArray, divArray, objToProcess); // controller calls view
 	}
 
 	static setDivs(onlyChangesArray, divArray, objToProcess) {
-		onlyChangesArray.forEach(elem => objToProcess.applyChanges(elem, divArray));
+		onlyChangesArray.forEach(arrayItem => objToProcess.applyChanges(arrayItem, divArray));
 	}
 
-	static copyGrid(height, width) { //logic --> instanceOfLife class
+	static copyGrid(height, width, gridArray, renderArray) {
 		for(let i = 0; i < height; i++) {
 			for(let k = 0; k < width; k++) {
-				logicRender.gridArray[i][k] = logicRender.renderGridArray[i][k];
+				gridArray[i][k] = renderArray[i][k];
 			}
 		}
-		return this;
+		return gridArray;
 	}
 
-	static applyRules(i, k, count, gridArrayCell, width) {
-		//DO MATH
-		let uiIndex = ((width)*i)+k;
-
-		if(count < 2 || count > 3 && gridArrayCell == 1)
-			return {gridArrayCell: 0, index: uiIndex};
-		else if(count == 3 && gridArrayCell == 0)
-			return {gridArrayCell: 1, index: uiIndex};
+	static applyRules(count, gridArrayCell) {
+		if(count < 2 || count > 3 && gridArrayCell == 1) {
+			return 0;
+		} else if(count == 3 && gridArrayCell == 0) {
+			return 1;
+		} else {
+			return gridArrayCell;
+		}
 	}
 
 	static calcNeighbours(i, k, gridArray, height, width) {
@@ -166,19 +233,19 @@ class logicRender {
 	}
 
 	static createArray(height, width) {
-		let gridArray = [];
+		let array = [];
 		for(let i = 0; i < height; i++) {
 			for(let k = 0; k < width; k++) {
-				gridArray[i] = [];
+				array[i] = [];
 			}
 		}
-		return gridArray;
+		return array;
 	}
 
 	static getDivs(height, width, wrapper) {
 		let uIDivs = [];
 		for(let i = 0; i < (height * width); i++) {
-			uIDivs[i] =wrapper.getElementsByTagName('div')[i];
+			uIDivs[i] = wrapper.getElementsByTagName('div')[i];
 		}
 		return uIDivs;
 	}
@@ -199,9 +266,9 @@ class guiRender {
 	refreshSliderOutput() {
 		let sliderArray = Array.prototype.slice.call(document.querySelectorAll(".slider"));
 		//const slider = document.querySelectorAll(".slider");
-		sliderArray.forEach(function(el) {
+		sliderArray.forEach(function(arrayItem) {
 			// Callbacks are passed a reference to the event object that triggered the handler
-			el.addEventListener('input', function(evt) {
+			arrayItem.addEventListener('input', function() {
 				let output = document.querySelector('output[name="'+ this.name + '"]');
 				output.value = this.value;
 			});
@@ -300,12 +367,12 @@ class guiRender {
 		return value.text;
 	}
 
-	applyChanges(elem, divArray) {
-		if(elem.gridArrayCell == 1) {
-			divArray[elem.index].setAttribute('class', 'alive');
+	applyChanges(arrayItem, divArray) {
+		if(arrayItem.gridArrayCell == 1) {
+			divArray[arrayItem.index].setAttribute('class', 'alive');
 		}
 		else {
-			divArray[elem.index].setAttribute('class', 'dead');
+			divArray[arrayItem.index].setAttribute('class', 'dead');
 		}
 	}
 }
