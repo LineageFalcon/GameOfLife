@@ -19,7 +19,7 @@ In the best case you use this emojis to declare the topic of your commit.</br>
 
 ## What needs to be done ?
 - [X] merge cleanCodeConcept into master
-- [ ] refine code
+- [X] refine code
 - [X] creating a form for userinput
 - [x] change number input to range for better UX
 - [ ] style the userinput
