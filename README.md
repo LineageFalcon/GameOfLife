@@ -4,7 +4,7 @@ And a private project just to do something instead of just thinking about how ni
 
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/LineageFalcon/GameOfLife.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/LineageFalcon/GameOfLife/context:javascript)
 
-![Image of Conway’s GameOfLife](https://https://github.com/LineageFalcon/GameOfLife/master/Conway’s GameOfLife.png)
+![Image of Conway’s GameOfLife](https://github.com/LineageFalcon/GameOfLife/blob/master/Conways's%20Game%20of%20Life.png)
 
 ## How to commit
 
