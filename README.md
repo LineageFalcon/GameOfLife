@@ -22,5 +22,8 @@ In the best case you use this emojis to declare the topic of your commit.</br>
 - [X] refine code
 - [X] creating a form for userinput
 - [x] change number input to range for better UX
-- [ ] style the userinput
+- [X] style the userinput
+
+## Features that could be implemented
 - [ ] make it possible to change the cell via cursor and drawing in them before and while the evolution is stopt
+- [ ] multiple instances of serveral grids
