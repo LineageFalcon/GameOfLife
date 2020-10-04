@@ -1,8 +1,10 @@
-# GameOfLife
+#  Conway’s GameOfLife
 A little training task to practice JavaScript.
 And a private project just to do something instead of just thinking about how nice coding is. :D
 
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/LineageFalcon/GameOfLife.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/LineageFalcon/GameOfLife/context:javascript)
+
+![Image of Conway’s GameOfLife](https://https://github.com/LineageFalcon/GameOfLife/master/Conway’s GameOfLife.png)
 
 ## How to commit
 
