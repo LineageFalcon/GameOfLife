@@ -281,7 +281,7 @@ class guiRender {
 		this._animationSpeed = null;
 
 		this.refreshFormView();
-		this.refreshSliderOutput()
+		this.refreshSliderOutput();
 	}
 
 	refreshFormView() {
@@ -304,7 +304,7 @@ class guiRender {
 
 		sliderArray.forEach((arrayItem) => {
 			// Callbacks are passed a reference to the event object that triggered the handler
-			arrayItem.addEventListener('input', () => {
+			arrayItem.addEventListener('input', function() {
 				let output = document.querySelector('output[name="'+ this.name + '"]');
 				output.value = this.value;
 			});
