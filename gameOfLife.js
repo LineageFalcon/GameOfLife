@@ -16,7 +16,7 @@ class controller {
 		this._modelInstance = model;
 	}
 
-	static setTime(timer) {
+	static setTimer(timer) {
 		this._time = timer;
 	}
 	//#endregion Setter
@@ -38,7 +38,7 @@ class controller {
 	static main() {
 		let mnBtnArray = Array.prototype.slice.call(document.querySelectorAll('.mnBtn'));
 
-		mnBtnArray.forEach(function(arrayItem) {
+		mnBtnArray.forEach((arrayItem) => {
 			let btnID = arrayItem.getAttribute('id');
 
 			switch(btnID) {
@@ -55,7 +55,7 @@ class controller {
 					controller.step(arrayItem, mnBtnArray);
 					break;
 			}
-		})
+		});
 	}
 
 	static create(arrayItem, mnBtnArray) {
@@ -68,6 +68,7 @@ class controller {
 
 			view.setValues();
 			view.createGrid();
+			logicRender.setArrays();
 		});
 	}
 
@@ -76,7 +77,6 @@ class controller {
 			let view = controller.getView();
 
 			if(arrayItem.textContent == 'Start') {
-				// view.setValues();
 				controller.play(view, undefined, mnBtnArray);
 				arrayItem.textContent = 'Stop'; //at browser incompatibility use '.innerText' instead
 				// mnBtnArray[2].disabled = false;
@@ -100,7 +100,8 @@ class controller {
 		arrayItem.addEventListener('click', () => {
 			let view = controller.getView();
 
-			logicRender.renderStep(view);
+			let renderStep = logicRender.renderStep(view);
+			view.setDivs(renderStep);
 		});
 	}
 
@@ -112,30 +113,64 @@ class controller {
 		let animationSpeed = objToProcess.getAnimationSpeed();
 		let iterations = objToProcess.getIterations();
 
-		if (controller.checkEvolution(iterations, runtime)) {
+		if(controller.checkEvolution(iterations, runtime)) {
 			clearTimeout(this.time);
 			mnBtnArray[1].textContent = 'Start';
 			mnBtnArray[3].disabled = false;
 		} else {
-			logicRender.renderStep(objToProcess);//must return values which are given to the view 
+			let renderStep = logicRender.renderStep(objToProcess)
+			objToProcess.setDivs(renderStep);
 			runtime++;
-			controller.setTime(setTimeout(controller.play, animationSpeed, objToProcess, runtime, mnBtnArray))
-			//time = requestAnimationFrame(() => {controller.play(objToProcess, run, runtime)});
+			controller.setTimer(setTimeout(controller.play, animationSpeed, objToProcess, runtime, mnBtnArray))
+			//time = requestAnimationFrame(() => {controller.play(objToProcess, run, runtime)}); //rly silly because too fast
 		}
 	}
 
 	static checkEvolution(iterations, runtime) {
-		if (runtime < iterations || iterations == -1) {
+		if(runtime < iterations || iterations == -1) {
 			return false;
-		}
-		else {
+		} else {
 			return true;
 		}
 	}
 }
 
 class logicRender {
-	constructor() {}
+	constructor() {
+		this._gridArray = null;
+		this._renderArray = null;
+	}
+
+	//#region Setter
+	static setGridArray(array) {
+		this._gridArray = array;
+	}
+
+	static setRenderArray(array) {
+		this._renderArray = array;
+	}
+	//#endregion Setter
+
+	//#region Getter
+	static getGridArray() {
+		return this._gridArray;
+	}
+
+	static getRenderArray() {
+		return this._renderArray;
+	}
+	//#endregion Getter
+
+	static setArrays() {
+		let view = controller.getView();
+		let height = view.getHeight();
+		let width = view.getWidth();
+		let gridArray = logicRender.createArray(height, width);
+		let renderArray = logicRender.createArray(height, width);
+
+		logicRender.setGridArray(gridArray);
+		logicRender.setRenderArray(renderArray);
+	}
 
 	static renderStep(objToProcess) {
 		let height = objToProcess.getHeight();
@@ -143,38 +178,24 @@ class logicRender {
 		let wrapper = objToProcess.getWrapper();
 
 		let divArray = logicRender.getDivs(height, width, wrapper);
-		let gridArray = logicRender.createArray(height, width);// shouldnt be here 
-		let renderArray = logicRender.createArray(height, width);// this as well
-		gridArray = logicRender.mapDivs(divArray, gridArray, height, width);
-		// let renderArray = logicRender.copyGrid(height, width, gridArray);
-
+		let gridArray = logicRender.getGridArray();
+		let renderArray = logicRender.getRenderArray();
 		let onlyChangesArray = [];
+
+		gridArray = logicRender.mapDivs(divArray, gridArray, height, width);
+
 		for(let i = 0; i < height; i++) {
 			for(let k = 0; k < width; k++) {
 				let count = logicRender.calcNeighbours(i, k, gridArray, height, width);
 
 				renderArray[i][k] = logicRender.applyRules(count, gridArray[i][k]);
-				if (renderArray[i][k] !== gridArray[i][k]) {
+				if(renderArray[i][k] !== gridArray[i][k]) {
 					let linearIndex = ((width)*i)+k;
 					onlyChangesArray.push({gridArrayCell: renderArray[i][k], index: linearIndex});
 				}
 			}
 		}
-		//method for logic to get new array for the new grid --> maybe this can replace the acutal if closure
-		logicRender.setDivs(onlyChangesArray, divArray, objToProcess); // controller calls view
-	}
-
-	static setDivs(onlyChangesArray, divArray, objToProcess) {
-		onlyChangesArray.forEach(arrayItem => objToProcess.applyChanges(arrayItem, divArray));
-	}
-
-	static copyGrid(height, width, gridArray, renderArray) {
-		for(let i = 0; i < height; i++) {
-			for(let k = 0; k < width; k++) {
-				gridArray[i][k] = renderArray[i][k];
-			}
-		}
-		return gridArray;
+		return {changes: onlyChangesArray, items: divArray};
 	}
 
 	static applyRules(count, gridArrayCell) {
@@ -243,18 +264,18 @@ class logicRender {
 	}
 
 	static getDivs(height, width, wrapper) {
-		let uIDivs = [];
+		let divArray = [];
 		for(let i = 0; i < (height * width); i++) {
-			uIDivs[i] = wrapper.getElementsByTagName('div')[i];
+			divArray[i] = wrapper.getElementsByTagName('div')[i];
 		}
-		return uIDivs;
+		return divArray;
 	}
 }
 
 class guiRender {
 	constructor() {
 		this._wrapper = document.createElement('section');
-		this._height = null;// could be getters from a binded class obj
+		this._height = null;
 		this._width = null;
 		this._iterations = null;
 		this._animationSpeed = null;
@@ -263,31 +284,31 @@ class guiRender {
 		this.refreshSliderOutput()
 	}
 
-	refreshSliderOutput() {
-		let sliderArray = Array.prototype.slice.call(document.querySelectorAll(".slider"));
-		//const slider = document.querySelectorAll(".slider");
-		sliderArray.forEach(function(arrayItem) {
-			// Callbacks are passed a reference to the event object that triggered the handler
-			arrayItem.addEventListener('input', function() {
-				let output = document.querySelector('output[name="'+ this.name + '"]');
-				output.value = this.value;
-			});
-		})
-	}
-
 	refreshFormView() {
 		this.setSliderMaxValues();
-		window.addEventListener('resize', this.setMaxValues);
+		window.addEventListener('resize', this.setSliderMaxValues);
 	}
 
 	setSliderMaxValues() {
 		let height = window.innerHeight;
 		let width = window.innerWidth;
 		let sliderHeight = document.getElementById('height');
-		let sliderWidth = document.getElementById('width')// special calc needed
+		let sliderWidth = document.getElementById('width');
 
 		sliderHeight.setAttribute('max', Math.round(height / 10 - 1));
 		sliderWidth.setAttribute('max', Math.round((width / 10) * 0.50));
+	}
+
+	refreshSliderOutput() {
+		let sliderArray = Array.prototype.slice.call(document.querySelectorAll(".slider"));
+
+		sliderArray.forEach((arrayItem) => {
+			// Callbacks are passed a reference to the event object that triggered the handler
+			arrayItem.addEventListener('input', () => {
+				let output = document.querySelector('output[name="'+ this.name + '"]');
+				output.value = this.value;
+			});
+		})
 	}
 
 	//#region Setter
@@ -337,41 +358,45 @@ class guiRender {
 		this.setAnimationSpeed(this.getOptionsValue('evoSpeed'));
 	}
 
-	createGrid() {
-		let container = document.getElementById('container');
-		container.appendChild(this._wrapper);
-		this._wrapper.setAttribute('class', 'grid');
-		this._wrapper.style.gridTemplateColumns = 'repeat(' + this._width+ ', auto)';
-		this._wrapper.style.gridTemplateRows = 'repeat(' + this._height + ', auto)';
-			for(let i = 0; i < this._height * this._width; i++) {
-				let div = document.createElement('div');
-				let ran = Math.round(Math.random());
-				if (ran == 1) {
-					this._wrapper.appendChild(div).setAttribute('class', 'alive');
-				}
-				else {
-					this._wrapper.appendChild(div).setAttribute('class', 'dead');
-				}
-			}
-		}
-
 	getOptionsValue(htmlElement) {
 		let value;
 		const ELEM = document.getElementById(htmlElement);
-		for (let i = 0; i < ELEM.options.length; i++ ) {
+		for(let i = 0; i < ELEM.options.length; i++) {
 			value = ELEM.options[i];
-			if ( value.selected === true ) {
+
+			if(value.selected === true) {
 				break;
 			}
 		}
 		return value.text;
 	}
 
+	createGrid() {
+		let container = document.getElementById('container');
+		container.appendChild(this._wrapper);
+		this._wrapper.setAttribute('class', 'grid');
+		this._wrapper.style.gridTemplateColumns = 'repeat(' + this._width+ ', auto)';
+		this._wrapper.style.gridTemplateRows = 'repeat(' + this._height + ', auto)';
+
+			for(let i = 0; i < this._height * this._width; i++) {
+				let div = document.createElement('div');
+				let ran = Math.round(Math.random());
+				if(ran == 1) {
+					this._wrapper.appendChild(div).setAttribute('class', 'alive');
+				} else {
+					this._wrapper.appendChild(div).setAttribute('class', 'dead');
+				}
+			}
+	}
+
+	setDivs({changes: onlyChangesArray, items: divArray}) {
+		onlyChangesArray.forEach(arrayItem => this.applyChanges(arrayItem, divArray));
+	}
+
 	applyChanges(arrayItem, divArray) {
 		if(arrayItem.gridArrayCell == 1) {
 			divArray[arrayItem.index].setAttribute('class', 'alive');
-		}
-		else {
+		} else {
 			divArray[arrayItem.index].setAttribute('class', 'dead');
 		}
 	}
