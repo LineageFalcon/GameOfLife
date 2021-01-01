@@ -7,7 +7,13 @@ section#formContainer {
     display: flex;
     height: 100%;
     width: 25%;
-    background: dimgrey;
+    background: rgba( 200, 200, 200, 0.30 );
+    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+    backdrop-filter: blur( 5.0px );
+    -webkit-backdrop-filter: blur( 5.0px );
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-right: 1px solid rgba( 255, 255, 255, 0.18 );
 }
 
 #form {
@@ -45,7 +51,7 @@ section#formContainer {
         --background: #fff;
         height: 30px;
         font-size: 1.1em;
-        border-radius: 1px;
+        border-radius: 10px;
         margin: 5px 0;
     }
 
@@ -75,7 +81,7 @@ section#formContainer {
     button {
         width: 80%;
         border: none;
-        border-radius: 1px;
+        border-radius: 10px;
     }
 
     input[type='checkbox'],
@@ -109,6 +115,7 @@ input[type=range] {
     margin: 5px 0;
     width: 100%;
     background-color: transparent;
+    border-radius: 10px;
 }
 
 input[type=range]:focus {
@@ -120,7 +127,7 @@ input[type=range]::-webkit-slider-runnable-track {
     height: 15px;
     cursor: pointer;
     background: #fff;
-    border-radius: 1px;
+    border-radius: 10px;
 }
 
 input[type=range]::-webkit-slider-thumb {
@@ -128,6 +135,7 @@ input[type=range]::-webkit-slider-thumb {
     width: 30px;
     background: #e85d04;
     cursor: pointer;
+    border-radius: 10px;
     -webkit-appearance: none;
 }
 
@@ -140,14 +148,14 @@ input[type=range]::-moz-range-track {
     height: 15px;
     cursor: pointer;
     background: #fff;
-    border-radius: 1px;
+    border-radius: 10px;
 }
 
 input[type=range]::-moz-range-thumb {
     border: 0px solid transparent;
     height: 15px;
     width: 30px;
-    border-radius: 0;
+    border-radius:10px;
     background: #e85d04;
     cursor: pointer;
 }
@@ -178,7 +186,7 @@ input[type=range]::-ms-thumb {
     border: 0px solid transparent;
     height: 15px;
     width: 30px;
-    border-radius: 0;
+    border-radius: 10px;
     background: #e85d04;
     cursor: pointer;
 }
