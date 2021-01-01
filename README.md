@@ -6,6 +6,7 @@ And a private project just to do something instead of just thinking about how ni
 
 ![Image of Conway’s GameOfLife](https://github.com/LineageFalcon/GameOfLife/blob/master/Conways's%20Game%20of%20Life.png)
 
+
 ## How to commit
 
 In the best case you use this emojis to declare the topic of your commit.</br>
