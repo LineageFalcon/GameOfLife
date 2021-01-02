@@ -91,12 +91,12 @@ class controller {
 		});
 	}
 
-	static pause(arrayItem, mnBtnArray) {// maybe not necessary
+	static pause(arrayItem) {// maybe not necessary
 		arrayItem.addEventListener('click', () => {
 			});
 	}
 
-	static step(arrayItem, mnBtnArray) {
+	static step(arrayItem) {
 		arrayItem.addEventListener('click', () => {
 			let view = controller.getView();
 
